@@ -8,6 +8,8 @@ import { TestimonialsSection } from '../sections/Testimonials';
 import { FaqSection } from '../sections/FaqSection';
 import { FeaturesGrid } from '../sections/FeaturesGrid';
 import { Cta } from '../sections/Cta';
+// footer
+import { Footer } from '../Footer/Footer';
 
 import './Landing.css';
 
@@ -164,7 +166,7 @@ export function Landing() {
 
       {/* Features Grid */}
       <FeaturesGrid />
-      
+
       {/* CTA Section */}
       <Cta />
 
@@ -181,6 +183,7 @@ export function Landing() {
       <FaqSection />
 
       {/* Footer */}
+      <Footer />
     </div>
    
   );
