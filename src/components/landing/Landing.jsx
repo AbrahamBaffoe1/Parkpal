@@ -4,6 +4,8 @@ import { ArrowRight, MapPin, Car, Shield, Star, ChevronRight, Quote } from 'luci
 import { CustomCursor } from '../cursor/CustomCursor';
 import { PricingSection } from '../sections/PricingSection';
 import { IntegrationsSection } from '../sections/IntegrationsSection';
+import { TestimonialsSection } from '../sections/Testimonials';
+import { FaqSection } from '../sections/FaqSection';
 import './Landing.css';
 
 export function Landing() {
@@ -221,6 +223,11 @@ export function Landing() {
 
       {/* Integrations Section */}
       <IntegrationsSection />
+
+      {/* FAQ Section */}
+      <FaqSection />
+
+      {/* Footer */}
     </div>
    
   );

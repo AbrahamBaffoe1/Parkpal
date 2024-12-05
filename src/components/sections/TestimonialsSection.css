@@ -1,0 +1,229 @@
+/* src/components/sections/TestimonialsSection.css */
+.testimonials-section {
+    position: relative;
+    padding: 8rem 0;
+    overflow: hidden;
+    background: var(--primary-dark);
+  }
+  
+  .testimonials-background {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba(147, 51, 234, 0.15) 0%,
+      rgba(10, 10, 10, 0) 70%
+    );
+    pointer-events: none;
+  }
+  
+  .testimonials-wrapper {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Carousel Styles */
+  .testimonials-carousel {
+    position: relative;
+    height: 400px;
+    margin: 3rem 0;
+    overflow: hidden;
+  }
+  
+  .testimonial-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .testimonial-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .testimonial-content blockquote {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.4;
+    color: white;
+    font-weight: 300;
+    margin-bottom: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .testimonial-slide.active blockquote {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Author Styles */
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+  }
+  
+  .testimonial-slide.active .testimonial-author {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .author-image {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(147, 51, 234, 0.5);
+  }
+  
+  .author-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .author-info {
+    text-align: left;
+  }
+  
+  .author-info h4 {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  
+  .author-info .role {
+    color: var(--accent-purple);
+    font-size: 0.875rem;
+    margin-bottom: 0.125rem;
+  }
+  
+  .author-info .location {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.875rem;
+  }
+  
+  /* Rating Stars */
+  .rating {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .star {
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .star.filled {
+    color: #FFD700;
+  }
+  
+  /* Navigation Buttons */
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+  }
+  
+  .nav-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%) scale(1.1);
+  }
+  
+  .nav-button.prev {
+    left: 1rem;
+  }
+  
+  .nav-button.next {
+    right: 1rem;
+  }
+  
+  /* Progress Indicators */
+  .testimonial-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  
+  .indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .indicator.active {
+    background: var(--accent-purple);
+    transform: scale(1.2);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .testimonials-carousel {
+      height: 500px;
+    }
+  
+    .testimonial-content blockquote {
+      font-size: 1.25rem;
+    }
+  
+    .nav-button {
+      width: 40px;
+      height: 40px;
+    }
+  
+    .nav-button.prev {
+      left: 0;
+    }
+  
+    .nav-button.next {
+      right: 0;
+    }
+  }
+  
+  /* Animation Keyframes */
+  @keyframes fadeSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
