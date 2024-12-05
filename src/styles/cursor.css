@@ -1,0 +1,209 @@
+/* src/styles/cursor.css */
+/* Custom Cursor Styles */
+.custom-cursor {
+    width: 20px;
+    height: 20px;
+    background: rgba(147, 51, 234, 0.3);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    mix-blend-mode: difference;
+  }
+  
+  .custom-cursor-follower {
+    width: 40px;
+    height: 40px;
+    background: rgba(147, 51, 234, 0.1);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Cursor interactions */
+  .hover-effect {
+    transform: scale(1.5);
+    background: rgba(147, 51, 234, 0.5);
+  }
+  
+  /* Enhanced Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Parallax Effect */
+  .parallax {
+    transform: translateY(var(--parallax-y));
+    transition: transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  /* Interactive Elements */
+  .interactive-card {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+  
+  .interactive-card:hover {
+    transform: rotateY(10deg) rotateX(10deg);
+  }
+  
+  /* Magnetic Effect */
+  .magnetic-button {
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+  
+  /* Enhanced Hover States */
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(147, 51, 234, 0.2);
+  }
+  
+  /* Text Effects */
+  .gradient-mask {
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  }
+  
+  /* New Interactive Sections */
+  .testimonial-card {
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .testimonial-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(147, 51, 234, 0.1), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .testimonial-card:hover::before {
+    opacity: 1;
+  }
+  
+  /* Timeline Section */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+  
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    width: 2px;
+    height: 100%;
+    background: var(--gradient-purple);
+  }
+  
+  .timeline-item {
+    margin: 2rem 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+  }
+  
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Responsive Enhancements */
+  @media (max-width: 768px) {
+    .custom-cursor,
+    .custom-cursor-follower {
+      display: none;
+    }
+  
+    .timeline::before {
+      left: 2rem;
+    }
+  
+    .interactive-card {
+      transform: none !important;
+    }
+  }
+  
+  /* Mobile Menu Animation */
+  .mobile-menu {
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .mobile-menu.active {
+    transform: translateX(0);
+  }
+  
+  /* Enhanced Loading States */
+  .loading-shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+  }
+  
+  @keyframes shimmer {
+    from { background-position: -200% 0; }
+    to { background-position: 200% 0; }
+  }
+  
+  /* Tooltip Styles */
+  .tooltip {
+    position: relative;
+  }
+  
+  .tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.875rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .tooltip:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
