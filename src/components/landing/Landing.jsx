@@ -6,6 +6,9 @@ import { PricingSection } from '../sections/PricingSection';
 import { IntegrationsSection } from '../sections/IntegrationsSection';
 import { TestimonialsSection } from '../sections/Testimonials';
 import { FaqSection } from '../sections/FaqSection';
+import { FeaturesGrid } from '../sections/FeaturesGrid';
+import { Cta } from '../sections/Cta';
+
 import './Landing.css';
 
 export function Landing() {
@@ -160,69 +163,19 @@ export function Landing() {
       </section>
 
       {/* Features Grid */}
-      <section className="features">
-        <h2 className="section-title animate-on-scroll">Why Choose ParkPal?</h2>
-        <div className="features-grid">
-          {features.map((feature, index) => (
-            <div 
-              key={index}
-              className="feature-card glass-card animate-on-scroll"
-              style={{ animationDelay: `${index * 0.15}s` }}
-            >
-              <div className="feature-icon">{feature.icon}</div>
-              <h3 className="feature-title">{feature.title}</h3>
-              <p className="feature-description">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="testimonials">
-        <h2 className="section-title animate-on-scroll">What Users Say</h2>
-        <div className="testimonials-grid">
-          {testimonials.map((testimonial, index) => (
-            <div 
-              key={index}
-              className="testimonial-card animate-on-scroll"
-              style={{ animationDelay: `${index * 0.2}s` }}
-            >
-              <Quote className="testimonial-icon" />
-              <p className="testimonial-content">{testimonial.content}</p>
-              <div className="testimonial-author">
-                <div>
-                  <h4>{testimonial.name}</h4>
-                  <p>{testimonial.role}</p>
-                </div>
-                <div className="testimonial-rating">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="star-icon" />
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
+      <FeaturesGrid />
+      
       {/* CTA Section */}
-      <section className="cta">
-        <div className="cta-content animate-on-scroll">
-          <h2 className="cta-title gradient-text">Ready to Start Parking Smarter?</h2>
-          <p className="cta-description">
-            Join thousands of drivers who have already simplified their parking experience.
-          </p>
-          <button className="btn btn-primary magnetic-button hover-lift">
-            Sign Up Now <ArrowRight className="w-5 h-5 ml-2" />
-          </button>
-        </div>
-      </section>
+      <Cta />
 
       {/* Pricing Section */}
       <PricingSection />
 
       {/* Integrations Section */}
       <IntegrationsSection />
+
+      {/* Testimonials Section */}
+      <TestimonialsSection />
 
       {/* FAQ Section */}
       <FaqSection />
