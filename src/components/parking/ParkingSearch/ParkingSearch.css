@@ -1,0 +1,62 @@
+.parking-container {
+    @apply max-w-7xl mx-auto px-4 py-8;
+  }
+  
+  .search-section {
+    @apply mb-8;
+  }
+  
+  .search-box {
+    @apply relative max-w-xl mx-auto;
+  }
+  
+  .search-icon {
+    @apply absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5;
+  }
+  
+  .search-input {
+    @apply w-full pl-12 pr-4 py-3 rounded-lg bg-white/5 border border-white/10
+           text-white placeholder-gray-400 focus:outline-none focus:ring-2 
+           focus:ring-purple-500 focus:border-transparent transition-all;
+  }
+  
+  .spots-grid {
+    @apply grid md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+  
+  .spot-card {
+    @apply bg-white/5 border border-white/10 rounded-lg p-6
+           hover:bg-white/10 transition-all duration-300
+           transform hover:scale-105;
+  }
+  
+  .spot-header {
+    @apply flex items-center gap-3 mb-4;
+  }
+  
+  .spot-icon {
+    @apply text-purple-400 w-6 h-6;
+  }
+  
+  .spot-name {
+    @apply text-lg font-semibold text-white;
+  }
+  
+  .spot-info {
+    @apply flex justify-between items-center mb-4;
+  }
+  
+  .availability {
+    @apply text-green-400;
+  }
+  
+  .price {
+    @apply text-purple-400 font-semibold;
+  }
+  
+  .book-button {
+    @apply w-full bg-gradient-to-r from-purple-600 to-indigo-600
+           text-white py-2 rounded-lg transition-all
+           hover:shadow-lg hover:shadow-purple-500/25
+           hover:scale-105;
+  }

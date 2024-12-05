@@ -1,0 +1,24 @@
+.header-container {
+  @apply sticky top-0 z-50 border-b border-white/10;
+}
+
+.logo-text {
+  @apply text-2xl font-bold;
+  background: linear-gradient(to right, #a855f7, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nav-links {
+  @apply hidden md:flex items-center space-x-8;
+}
+
+.nav-link {
+  @apply text-gray-300 hover:text-white transition-colors;
+}
+
+.auth-button {
+  @apply bg-gradient-to-r from-purple-600 to-indigo-600 
+         text-white px-4 py-2 rounded-lg transition-all 
+         hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25;
+}
