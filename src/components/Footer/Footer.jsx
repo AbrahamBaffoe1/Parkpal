@@ -32,7 +32,6 @@ export function Footer() {
         { name: "Documentation", href: "/docs", icon: <MessageCircle size={16} /> }
       ]
     },
-    // ... other navigation categories
   ];
 
   return (

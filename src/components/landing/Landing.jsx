@@ -7,6 +7,8 @@ import { IntegrationsSection } from '../sections/IntegrationsSection';
 import { TestimonialsSection } from '../sections/Testimonials';
 import { FaqSection } from '../sections/FaqSection';
 import { FeaturesGrid } from '../sections/FeaturesGrid';
+import { Banner } from '../Banner/Banner';
+import { Navigation } from '../Navigation/Navigation';
 import { Cta } from '../sections/Cta';
 // footer
 import { Footer } from '../Footer/Footer';
@@ -51,64 +53,22 @@ export function Landing() {
     };
   }, []);
 
-  const features = [
-    {
-      icon: <MapPin />,
-      title: "Real-time Availability",
-      description: "Find open parking spots instantly in your desired location."
-    },
-    {
-      icon: <Car />,
-      title: "Easy Booking",
-      description: "Reserve your spot in advance with just a few taps."
-    },
-    {
-      icon: <Shield />,
-      title: "Secure Payments",
-      description: "Safe and encrypted transactions for peace of mind."
-    },
-    {
-      icon: <Star />,
-      title: "User Reviews",
-      description: "Make informed decisions with community feedback."
-    }
-  ];
+  
 
-  const testimonials = [
-    {
-      name: "Sarah Johnson",
-      role: "Daily Commuter",
-      content: "ParkPal has transformed my daily commute. Finding parking is now effortless!",
-      rating: 5
-    },
-    {
-      name: "Michael Chen",
-      role: "Business Owner",
-      content: "The best parking solution for my business needs. Highly recommended!",
-      rating: 5
-    },
-    {
-      name: "Emma Wilson",
-      role: "City Explorer",
-      content: "Love the real-time updates and user-friendly interface. A must-have app!",
-      rating: 4
-    }
-  ];
 
   return (
     <div className="landing-page" ref={parallaxRef}>
       <CustomCursor />
       
       {/* Banner */}
-      <div className="banner">
-        <span className="animate-on-scroll">🎉 Now available in 100+ cities!</span>
-        <button className="banner-button magnetic-button">
-          Learn More
-        </button>
-      </div>
+      <Banner />
+
 
       {/* Navigation */}
-      <nav className="nav">
+      <Navigation />
+
+
+      {/* <nav className="nav">
         <div className="nav-container">
           <a href="/" className="nav-logo magnetic-button">ParkPal</a>
           <div className="nav-links">
@@ -120,7 +80,7 @@ export function Landing() {
             </a>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
       {/* Hero Section */}
       <section className="hero">
