@@ -413,3 +413,224 @@
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-5px);
 }
+
+.hero-section.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  padding: 6rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  margin-top: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.metric-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--gradient-purple);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.metric-suffix {
+  font-size: 1.25rem;
+  color: var(--accent-purple);
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.5rem;
+}
+
+/* Use Cases Section */
+.use-cases-section {
+  padding: 6rem 2rem;
+  background: linear-gradient(to bottom, var(--primary-dark), rgba(147, 51, 234, 0.1));
+}
+
+.tab-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.tab-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.3s ease;
+}
+
+.tab-button.active {
+  background: var(--gradient-purple);
+  color: white;
+}
+
+.tab-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.use-cases-content {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.use-case-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+}
+
+.use-case-panel.active {
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.features-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.feature-icon {
+  color: var(--accent-purple);
+}
+
+/* Partners Section */
+.partners-section {
+  padding: 4rem 2rem;
+  text-align: center;
+  background: var(--primary-dark);
+}
+
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 2rem;
+}
+
+/* Scroll to Top Button */
+.scroll-top-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: var(--gradient-purple);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  transform: rotate(-90deg);
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.scroll-top-button:hover {
+  transform: rotate(-90deg) scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .hero-section.split {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .hero-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .tab-switcher {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .features-list {
+    grid-template-columns: 1fr;
+  }
+
+  .partners-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Interactive Elements */
+.magnetic-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.magnetic-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.magnetic-button:hover::after {
+  transform: translateX(0);
+}

@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight, MapPin, Car, Shield, Star, ChevronRight, Quote } from 'lucide-react';
 import { CustomCursor } from '../cursor/CustomCursor';
+import { PricingSection } from '../sections/PricingSection';
+import { IntegrationsSection } from '../sections/IntegrationsSection';
 import './Landing.css';
 
 export function Landing() {
@@ -213,6 +215,13 @@ export function Landing() {
           </button>
         </div>
       </section>
+
+      {/* Pricing Section */}
+      <PricingSection />
+
+      {/* Integrations Section */}
+      <IntegrationsSection />
     </div>
+   
   );
 }

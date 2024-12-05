@@ -1,0 +1,364 @@
+/* src/components/sections/sections.css */
+/* Pricing Section Styles */
+.pricing-section {
+    padding: 6rem 0;
+    background: linear-gradient(to bottom, var(--primary-dark), rgba(147, 51, 234, 0.1));
+  }
+  
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+  }
+  
+  .pricing-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .pricing-card.popular {
+    transform: scale(1.05);
+    border: 2px solid var(--accent-purple);
+  }
+  
+  .pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(147, 51, 234, 0.2);
+  }
+  
+  .popular-tag {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gradient-purple);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .plan-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .plan-price {
+    margin: 1rem 0;
+  }
+  
+  .plan-price .amount {
+    font-size: 3rem;
+    font-weight: 700;
+    background: var(--gradient-purple);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .plan-price .period {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .plan-features {
+    margin: 2rem 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .feature-icon {
+    color: var(--accent-purple);
+  }
+  
+  /* Integrations Section Styles */
+  .integrations-section {
+    padding: 6rem 0;
+    background: linear-gradient(to bottom, rgba(147, 51, 234, 0.1), var(--primary-dark));
+  }
+  
+  .integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .integration-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .integration-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .integration-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+  }
+  
+  /* FAQ Section Styles */
+  .faq-section {
+    padding: 6rem 0;
+    background: var(--primary-dark);
+  }
+  
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .faq-card {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+  
+  .faq-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-5px);
+  }
+  
+  .faq-card h3 {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .faq-card p {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .pricing-grid {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+  
+    .pricing-card.popular {
+      transform: none;
+    }
+  
+    .integrations-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .integrations-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .plan-price .amount {
+      font-size: 2.5rem;
+    }
+  }
+  
+  /* Animations */
+  .pricing-card, .integration-card, .faq-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  
+  .pricing-card.visible, .integration-card.visible, .faq-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .integrations-section {
+    padding: 6rem 0;
+    background: linear-gradient(to bottom, var(--primary-dark), rgba(147, 51, 234, 0.1));
+  }
+  
+  .integrations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    padding: 0 2rem;
+  }
+  
+  .integration-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .integration-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px rgba(147, 51, 234, 0.1);
+  }
+  
+  .integration-icon-wrapper {
+    background: rgba(147, 51, 234, 0.1);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .integration-icon {
+    color: var(--accent-purple);
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .integration-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 0.75rem;
+  }
+  
+  .integration-description {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+  
+  .integration-partners {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .partner-tag {
+    background: rgba(147, 51, 234, 0.1);
+    color: var(--accent-purple);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  /* FAQ Section */
+  .faq-section {
+    padding: 6rem 0;
+    background: var(--primary-dark);
+  }
+  
+  .faq-grid {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .faq-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  
+  .faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+  }
+  
+  .faq-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .faq-answer.show {
+    max-height: 300px;
+    padding: 0 1.5rem 1.5rem;
+  }
+  
+  .faq-cta {
+    text-align: center;
+    margin-top: 3rem;
+  }
+  
+  .faq-cta p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .integrations-grid {
+      grid-template-columns: 1fr;
+      padding: 0 1rem;
+    }
+  
+    .faq-grid {
+      padding: 0 1rem;
+    }
+  
+    .faq-question {
+      font-size: 1rem;
+      padding: 1.25rem;
+    }
+  }
+  
+  /* Animations */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
