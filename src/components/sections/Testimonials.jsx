@@ -1,10 +1,20 @@
 // src/components/sections/TestimonialsSection.jsx
-import { useState, useEffect } from 'react';
-import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Star, ChevronLeft, ChevronRight, Quote, ArrowLeft, ArrowRight, Loader } from 'lucide-react';
 import './TestimonialsSection.css';
 
 export function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState({});
+  const [swipeDirection, setSwipeDirection] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [progress, setProgress] = useState(0);
+  
+  const carouselRef = useRef(null);
+  const progressRef = useRef(null);
+  const autoPlayRef = useRef(null);
 
   const testimonials = [
     {
@@ -41,48 +51,110 @@ export function TestimonialsSection() {
     }
   ];
 
+  // Enhanced navigation with progress reset
   const nextTestimonial = () => {
     setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    resetProgress();
   };
 
   const prevTestimonial = () => {
     setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    resetProgress();
   };
 
+  // Progress bar handling
+  const resetProgress = () => {
+    setProgress(0);
+    if (progressRef.current) {
+      progressRef.current.style.width = '0%';
+      setTimeout(() => {
+        progressRef.current.style.width = '100%';
+      }, 50);
+    }
+  };
+
+  // Auto-advance and progress
   useEffect(() => {
-    const timer = setInterval(nextTestimonial, 5000);
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          nextTestimonial();
+          return 0;
+        }
+        return prev + 2; // Adjust speed here
+      });
+    }, 100);
+
     return () => clearInterval(timer);
-  }, []);
+  }, [activeIndex]);
 
-  // Handle touch events for mobile swipe
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  // Image loading handler
+  const handleImageLoad = (index) => {
+    setImagesLoaded(prev => ({
+      ...prev,
+      [index]: true
+    }));
+    if (Object.keys(imagesLoaded).length === testimonials.length - 1) {
+      setIsLoading(false);
+    }
+  };
 
+  // Enhanced touch handling with resistance
   const handleTouchStart = (e) => {
-    setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(true);
+    const touch = e.touches[0];
+    setDragOffset(0);
+    setSwipeDirection(null);
   };
 
   const handleTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+    if (!isDragging) return;
+
+    const touch = e.touches[0];
+    const currentOffset = touch.clientX - e.target.getBoundingClientRect().left;
+    const delta = currentOffset - dragOffset;
+
+    // Add resistance at edges
+    if ((activeIndex === 0 && delta > 0) || 
+        (activeIndex === testimonials.length - 1 && delta < 0)) {
+      setDragOffset(delta * 0.3);
+    } else {
+      setDragOffset(delta);
+    }
+
+    // Show swipe direction indicator
+    if (Math.abs(delta) > 50) {
+      setSwipeDirection(delta > 0 ? 'right' : 'left');
+    }
   };
 
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > 50;
-    const isRightSwipe = distance < -50;
+    if (!isDragging) return;
 
-    if (isLeftSwipe) {
-      nextTestimonial();
-    }
-    if (isRightSwipe) {
-      prevTestimonial();
+    const threshold = 100; // Minimum distance for swipe
+    if (Math.abs(dragOffset) > threshold) {
+      if (dragOffset > 0) {
+        prevTestimonial();
+      } else {
+        nextTestimonial();
+      }
     }
 
-    setTouchStart(null);
-    setTouchEnd(null);
+    setIsDragging(false);
+    setDragOffset(0);
+    setSwipeDirection(null);
   };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowLeft') prevTestimonial();
+      if (e.key === 'ArrowRight') nextTestimonial();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <section className="testimonials-section">
@@ -92,23 +164,33 @@ export function TestimonialsSection() {
         
         <div className="testimonials-wrapper">
           <button 
-            className="nav-button prev"
+            className={`nav-button prev ${activeIndex === 0 ? 'disabled' : ''}`}
             onClick={prevTestimonial}
+            disabled={activeIndex === 0}
             aria-label="Previous testimonial"
           >
             <ChevronLeft size={24} />
           </button>
           
           <button 
-            className="nav-button next"
+            className={`nav-button next ${activeIndex === testimonials.length - 1 ? 'disabled' : ''}`}
             onClick={nextTestimonial}
+            disabled={activeIndex === testimonials.length - 1}
             aria-label="Next testimonial"
           >
             <ChevronRight size={24} />
           </button>
 
+          {/* Swipe Direction Indicators */}
+          {swipeDirection && (
+            <div className={`swipe-indicator ${swipeDirection}`}>
+              {swipeDirection === 'left' ? <ArrowLeft /> : <ArrowRight />}
+            </div>
+          )}
+
           <div 
-            className="testimonials-carousel"
+            className={`testimonials-carousel ${isDragging ? 'dragging' : ''}`}
+            ref={carouselRef}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -118,7 +200,7 @@ export function TestimonialsSection() {
                 key={index}
                 className={`testimonial-slide ${index === activeIndex ? 'active' : ''}`}
                 style={{
-                  transform: `translateX(${(index - activeIndex) * 100}%)`,
+                  transform: `translateX(${(index - activeIndex) * 100 + (index === activeIndex ? dragOffset : 0)}%)`,
                   opacity: index === activeIndex ? 1 : 0,
                   visibility: index === activeIndex ? 'visible' : 'hidden'
                 }}
@@ -126,6 +208,7 @@ export function TestimonialsSection() {
                 <div className="testimonial-content">
                   <Quote className="quote-icon" size={40} />
                   <blockquote>{testimonial.content}</blockquote>
+                  
                   <div className="rating">
                     {[...Array(5)].map((_, i) => (
                       <Star 
@@ -138,10 +221,17 @@ export function TestimonialsSection() {
                   
                   <div className="testimonial-author">
                     <div className="author-image">
+                      {!imagesLoaded[index] && (
+                        <div className="image-loader">
+                          <Loader className="animate-spin" size={24} />
+                        </div>
+                      )}
                       <img 
                         src={testimonial.image} 
                         alt={testimonial.name}
                         loading="lazy"
+                        onLoad={() => handleImageLoad(index)}
+                        className={imagesLoaded[index] ? 'loaded' : ''}
                       />
                     </div>
                     <div className="author-info">
@@ -155,6 +245,16 @@ export function TestimonialsSection() {
             ))}
           </div>
 
+          {/* Progress Bar */}
+          <div className="progress-container">
+            <div 
+              className="progress-bar" 
+              ref={progressRef}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+
+          {/* Enhanced Indicators */}
           <div className="testimonial-indicators">
             {testimonials.map((_, index) => (
               <button
