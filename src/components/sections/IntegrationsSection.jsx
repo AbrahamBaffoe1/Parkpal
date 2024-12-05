@@ -16,7 +16,7 @@
         name: "Slack",
         description: "Team notifications and updates"
       },
-      // Add more integrations
+    
     ];
   
     return (
@@ -47,36 +47,3 @@
     );
   }
   
-  // src/components/sections/FaqSection.jsx
-  export function FaqSection() {
-    const faqs = [
-      {
-        question: "How does ParkPal work?",
-        answer: "ParkPal uses real-time data to help you find and reserve parking spots. Simply enter your destination, choose from available spots, and book with one tap."
-      },
-      {
-        question: "Is my payment information secure?",
-        answer: "Yes, all payment information is encrypted and processed securely through Stripe, our PCI-compliant payment processor."
-      },
-      // Add more FAQs
-    ];
-  
-    return (
-      <section className="faq-section">
-        <div className="container">
-          <h2 className="section-title animate-on-scroll">
-            Frequently Asked Questions
-          </h2>
-  
-          <div className="faq-grid">
-            {faqs.map((faq, index) => (
-              <div key={index} className="faq-card animate-on-scroll">
-                <h3>{faq.question}</h3>
-                <p>{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
