@@ -1,0 +1,101 @@
+/* src/styles/ColorScheme.css */
+:root {
+    /* Base Enterprise Colors */
+    --ibm-blue: #0043CE;
+    --salesforce-blue: #00A1E0;
+    --microsoft-blue: #00A4EF;
+    --amazon-orange: #FF9900;
+    --google-blue: #4285F4;
+    --apple-gray: #555555;
+    --oracle-red: #F80000;
+    --sap-blue: #0FAAFF;
+    --adobe-red: #FF0000;
+    --cisco-blue: #049FD9;
+  
+    /* Gradient Variations */
+    --gradient-1: linear-gradient(135deg, #0043CE, #00A4EF);
+    --gradient-2: linear-gradient(135deg, #FF9900, #FF5733);
+    --gradient-3: linear-gradient(135deg, #4285F4, #0FAAFF);
+    --gradient-4: linear-gradient(135deg, #F80000, #FF0000);
+    --gradient-5: linear-gradient(135deg, #049FD9, #00A1E0);
+  
+    /* Animation Control */
+    --color-transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Color Animation Classes */
+  .color-scheme-1 {
+    --primary-gradient: var(--gradient-1);
+    --accent-color: var(--ibm-blue);
+    --secondary-color: var(--microsoft-blue);
+    background: linear-gradient(145deg, rgba(0, 67, 206, 0.1), rgba(0, 164, 239, 0.1));
+  }
+  
+  .color-scheme-2 {
+    --primary-gradient: var(--gradient-2);
+    --accent-color: var(--amazon-orange);
+    --secondary-color: #FF5733;
+    background: linear-gradient(145deg, rgba(255, 153, 0, 0.1), rgba(255, 87, 51, 0.1));
+  }
+  
+  .color-scheme-3 {
+    --primary-gradient: var(--gradient-3);
+    --accent-color: var(--google-blue);
+    --secondary-color: var(--sap-blue);
+    background: linear-gradient(145deg, rgba(66, 133, 244, 0.1), rgba(15, 170, 255, 0.1));
+  }
+  
+  .color-scheme-4 {
+    --primary-gradient: var(--gradient-4);
+    --accent-color: var(--oracle-red);
+    --secondary-color: var(--adobe-red);
+    background: linear-gradient(145deg, rgba(248, 0, 0, 0.1), rgba(255, 0, 0, 0.1));
+  }
+  
+  .color-scheme-5 {
+    --primary-gradient: var(--gradient-5);
+    --accent-color: var(--cisco-blue);
+    --secondary-color: var(--salesforce-blue);
+    background: linear-gradient(145deg, rgba(4, 159, 217, 0.1), rgba(0, 161, 224, 0.1));
+  }
+  
+  /* Apply transitions to relevant elements */
+  .landing-page {
+    transition: background var(--color-transition);
+  }
+  
+  .gradient-text,
+  .section-title,
+  [class*="button"],
+  [class*="card"] {
+    transition: all var(--color-transition);
+  }
+  
+  /* Dynamic Button Styles */
+  .btn-primary {
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 15px rgba(var(--accent-color), 0.3);
+  }
+  
+  .btn-secondary {
+    border: 2px solid var(--accent-color);
+    color: var(--accent-color);
+  }
+  
+  /* Dynamic Card Styles */
+  .feature-card,
+  .integration-card {
+    border: 1px solid rgba(var(--accent-color), 0.1);
+    background: linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(var(--accent-color), 0.05)
+    );
+  }
+  
+  /* Hover Effects */
+  .feature-card:hover,
+  .integration-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 25px rgba(var(--accent-color), 0.2);
+  }

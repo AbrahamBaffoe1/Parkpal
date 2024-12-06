@@ -1,23 +1,39 @@
 // src/components/landing/Landing.jsx
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, MapPin, Car, Shield, Star, ChevronRight, Quote } from 'lucide-react';
 import { CustomCursor } from '../cursor/CustomCursor';
 import { PricingSection } from '../sections/PricingSection';
 import { IntegrationsSection } from '../IntegrationsSection/IntegrationsSection';
-import { TestimonialsSection } from '../sections/Testimonials';
+import { TestimonialsSection } from '../Testimonials/Testimonials';
 import { FAQSection } from '../FAQSection/FAQSection';
-import { FeaturesGrid } from '../sections/FeaturesGrid';
+import { FeaturesGrid } from '../FeaturesGrid/FeaturesGrid';
 import { Banner } from '../Banner/Banner';
 import { Navigation } from '../Navigation/Navigation';
 import { Cta } from '../sections/Cta';
 import { HeroSection } from '../HeroSection/HeroSection';
 import { Footer } from '../Footer/Footer';
 import './Landing.css';
+import '../../styles/colorScheme.css'; 
 
-  
+
+
+export function useColorScheme() {
+  const [colorScheme, setColorScheme] = useState(1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setColorScheme((prev) => (prev % 5) + 1);
+    }, 3000); // Change every 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return colorScheme;
+}
 
 export function Landing() {
   const parallaxRef = useRef(null);
+  const colorScheme = useColorScheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +74,7 @@ export function Landing() {
 
 
   return (
+    <div className={`landing-page color-scheme-${colorScheme}`}>
     <div className="landing-page" ref={parallaxRef}>
     
       <CustomCursor />
@@ -91,6 +108,7 @@ export function Landing() {
 
       {/* Footer */}
       <Footer />
+    </div>
     </div>
    
   );

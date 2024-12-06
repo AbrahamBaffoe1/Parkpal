@@ -1,0 +1,114 @@
+.features-section {
+    padding: 6rem 0;
+    background: linear-gradient(
+      to bottom,
+      var(--primary-dark),
+      rgba(147, 51, 234, 0.1)
+    );
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+  }
+  
+  .section-description {
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: var(--transition-all);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .feature-icon-wrapper {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(to right, var(--accent-purple), var(--accent-indigo));
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .feature-icon {
+    color: white;
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .feature-content {
+    flex-grow: 1;
+  }
+  
+  .feature-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .feature-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+  }
+  
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .fade-up-delay-1 {
+    animation-delay: 0.1s;
+  }
+  
+  .fade-up-delay-2 {
+    animation-delay: 0.2s;
+  }
+  
+  .fade-up-delay-3 {
+    animation-delay: 0.3s;
+  }
+  
+  .fade-up-delay-4 {
+    animation-delay: 0.4s;
+  }

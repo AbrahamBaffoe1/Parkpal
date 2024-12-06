@@ -586,12 +586,12 @@
   text-align: center;
 }
 
-.hero-title {
+/* .hero-title {
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: bold;
   margin-bottom: 1.5rem;
   color: white;
-}
+} */
 
 .gradient-text {
   background: linear-gradient(to right, var(--accent-purple), var(--accent-indigo));
@@ -646,28 +646,9 @@
   text-align: center;
 }
 
-/* Features Grid */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-}
 
-.feature-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  padding: 2rem;
-}
 
-/* Testimonials */
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
-}
+
 
 /* Animations */
 .animate-on-scroll {
