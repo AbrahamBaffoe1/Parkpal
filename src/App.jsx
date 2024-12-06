@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Landing } from './components/landing/Landing';
 import { Error404 } from './components/Error404/Error404';
-import ConsentBanner from './components/ConsentBanner/ConsentBanner';  // Changed to default import
+import ConsentBanner from './components/ConsentBanner/ConsentBanner';  
 import './App.css';
 
 function App() {

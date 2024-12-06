@@ -5,7 +5,7 @@ import { CustomCursor } from '../cursor/CustomCursor';
 import { PricingSection } from '../sections/PricingSection';
 import { IntegrationsSection } from '../sections/IntegrationsSection';
 import { TestimonialsSection } from '../sections/Testimonials';
-import { FaqSection } from '../sections/FaqSection';
+import { FaqSection } from '../../assets/FaqSection/FaqSection';
 import { FeaturesGrid } from '../sections/FeaturesGrid';
 import { Banner } from '../Banner/Banner';
 import { Navigation } from '../Navigation/Navigation';

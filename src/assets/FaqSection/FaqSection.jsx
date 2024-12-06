@@ -1,7 +1,8 @@
 // src/components/sections/FaqSection.jsx
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import './sections.css';
+import './FaqSection.css';
+import '../../components/sections/sections.css';
 
 export function FaqSection() {
   const [activeIndex, setActiveIndex] = useState(null);
