@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Menu, X } from 'lucide-react';
+import { ChevronRight, Menu, X, Sun, Moon } from 'lucide-react';
 import './Navigation.css';
 
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +15,10 @@ export function Navigation() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+  }, [isDarkTheme]);
 
   // Navigation links data
   const navLinks = [
@@ -55,14 +60,25 @@ export function Navigation() {
             ))}
           </div>
           
+          {/* Theme Toggle */}
+          <button
+            className="theme-toggle"
+            onClick={() => setIsDarkTheme(!isDarkTheme)}
+            aria-label="Toggle theme"
+          >
+            {isDarkTheme ? 
+              <Sun className="theme-icon" size={20} /> : 
+              <Moon className="theme-icon" size={20} />
+            }
+          </button>
+          
           <a 
             href="/login" 
             className="nav-button"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            <span className="button-text">Get Started</span>
+            <span className="button">Get Started</span>
             <ChevronRight className="button-icon" />
-            <div className="button-glow"></div>
           </a>
         </div>
       </div>
