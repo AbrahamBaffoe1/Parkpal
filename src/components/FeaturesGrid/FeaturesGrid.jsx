@@ -36,7 +36,6 @@ export function FeaturesGrid() {
     }
   ];
 
-  // Intersection Observer setup for animations
   const observerRef = useRef(null);
   
   useEffect(() => {
@@ -54,8 +53,7 @@ export function FeaturesGrid() {
       }
     );
 
-    // Observe all animated elements
-    document.querySelectorAll('.animate-on-scroll').forEach((element) => {
+    document.querySelectorAll('.parkpal-animate').forEach((element) => {
       observerRef.current.observe(element);
     });
 
@@ -67,34 +65,36 @@ export function FeaturesGrid() {
   }, []);
 
   return (
-    <section className="features-section">
-      <div className="container">
-        <div className="section-header">
-          <h2 className="section-title animate-on-scroll">
+    <section className="parkpal-features">
+      <div className="parkpal-container">
+        <div className="parkpal-features-header">
+          <h2 className="parkpal-features-title parkpal-animate">
             Enterprise Solutions for Modern Parking
           </h2>
-          <p className="section-description animate-on-scroll">
+          <p className="parkpal-features-description parkpal-animate">
             ParkPal leverages cutting-edge technology to revolutionize the parking experience. 
             Our enterprise-grade platform delivers unmatched reliability, security, and convenience 
             to businesses and individuals alike.
           </p>
         </div>
-        <div className="features-grid">
+        <div className="parkpal-features-grid">
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`feature-card animate-on-scroll`}
+              className="parkpal-feature-card parkpal-animate"
               style={{ 
                 animationDelay: `${index * 0.1}s`,
                 transitionDelay: `${index * 0.1}s`
               }}
             >
-              <div className="feature-icon-wrapper">
-                {feature.icon}
+              <div className="parkpal-feature-icon-wrapper">
+                <div className="parkpal-feature-icon">
+                  {feature.icon}
+                </div>
               </div>
-              <div className="feature-content">
-                <h3 className="feature-title">{feature.title}</h3>
-                <p className="feature-description">{feature.description}</p>
+              <div className="parkpal-feature-content">
+                <h3 className="parkpal-feature-title">{feature.title}</h3>
+                <p className="parkpal-feature-description">{feature.description}</p>
               </div>
             </div>
           ))}

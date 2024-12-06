@@ -1,5 +1,5 @@
-/* Enhanced Features Section with Premium Styles */
-.features-section {
+/* FeaturesGrid.css */
+.parkpal-features {
     position: relative;
     padding: 10rem 0;
     background: 
@@ -9,8 +9,7 @@
     overflow: hidden;
   }
   
-  /* Animated Background Elements */
-  .features-section::before {
+  .parkpal-features::before {
     content: '';
     position: absolute;
     top: 0;
@@ -23,11 +22,10 @@
       rgba(147, 51, 234, 0.3) 50%,
       transparent 100%
     );
-    animation: shimmer 8s infinite;
+    animation: parkpalShimmer 8s infinite;
   }
   
-  /* Premium Container */
-  .container {
+  .parkpal-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -35,14 +33,13 @@
     z-index: 2;
   }
   
-  /* Enhanced Section Header */
-  .section-header {
+  .parkpal-features-header {
     text-align: center;
     margin-bottom: 6rem;
     position: relative;
   }
   
-  .section-title {
+  .parkpal-features-title {
     font-size: clamp(2.5rem, 5vw, 3.75rem);
     font-weight: 800;
     background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
@@ -54,7 +51,7 @@
     letter-spacing: -0.02em;
   }
   
-  .section-title::after {
+  .parkpal-features-title::after {
     content: '';
     position: absolute;
     bottom: -1rem;
@@ -68,10 +65,10 @@
       rgba(147, 51, 234, 0) 100%
     );
     border-radius: 2px;
-    animation: pulseWidth 3s infinite;
+    animation: parkpalPulseWidth 3s infinite;
   }
   
-  .section-description {
+  .parkpal-features-description {
     font-size: clamp(1.125rem, 2vw, 1.25rem);
     color: rgba(255, 255, 255, 0.8);
     max-width: 800px;
@@ -79,16 +76,14 @@
     line-height: 1.8;
   }
   
-  /* Premium Features Grid */
-  .features-grid {
+  .parkpal-features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2.5rem;
     perspective: 1000px;
   }
   
-  /* Enhanced Feature Card */
-  .feature-card {
+  .parkpal-feature-card {
     position: relative;
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(20px);
@@ -103,15 +98,15 @@
     transform-style: preserve-3d;
   }
   
-  .feature-card::before,
-  .feature-card::after {
+  .parkpal-feature-card::before,
+  .parkpal-feature-card::after {
     content: '';
     position: absolute;
     border-radius: inherit;
     transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
-  .feature-card::before {
+  .parkpal-feature-card::before {
     inset: 0;
     background: linear-gradient(
       135deg,
@@ -121,18 +116,7 @@
     opacity: 0;
   }
   
-  .feature-card::after {
-    inset: -1px;
-    background: linear-gradient(
-      135deg,
-      rgba(147, 51, 234, 0.1) 0%,
-      rgba(99, 102, 241, 0.1) 100%
-    );
-    opacity: 0;
-    z-index: -1;
-  }
-  
-  .feature-card:hover {
+  .parkpal-feature-card:hover {
     transform: translateY(-10px) scale(1.02) rotateX(2deg);
     border-color: rgba(255, 255, 255, 0.1);
     box-shadow: 
@@ -140,16 +124,7 @@
       0 0 60px rgba(147, 51, 234, 0.1);
   }
   
-  .feature-card:hover::before {
-    opacity: 1;
-  }
-  
-  .feature-card:hover::after {
-    opacity: 1;
-  }
-  
-  /* Enhanced Icon Wrapper */
-  .feature-icon-wrapper {
+  .parkpal-feature-icon-wrapper {
     width: 5rem;
     height: 5rem;
     background: linear-gradient(135deg, 
@@ -165,31 +140,7 @@
     transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
-  .feature-icon-wrapper::before {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    background: inherit;
-    border-radius: inherit;
-    opacity: 0.3;
-    filter: blur(12px);
-    transition: all 0.6s ease;
-  }
-  
-  .feature-card:hover .feature-icon-wrapper {
-    transform: scale(1.1) rotate(8deg) translateZ(20px);
-    background: linear-gradient(135deg,
-      rgba(147, 51, 234, 0.9) 0%,
-      rgba(99, 102, 241, 0.9) 100%
-    );
-  }
-  
-  .feature-card:hover .feature-icon-wrapper::before {
-    opacity: 0.6;
-    inset: -6px;
-  }
-  
-  .feature-icon {
+  .parkpal-feature-icon {
     color: white;
     width: 2.5rem;
     height: 2.5rem;
@@ -199,17 +150,12 @@
     transition: transform 0.6s ease;
   }
   
-  .feature-card:hover .feature-icon {
-    transform: scale(1.1) translateZ(10px);
-  }
-  
-  /* Enhanced Content */
-  .feature-content {
+  .parkpal-feature-content {
     flex-grow: 1;
     transform-style: preserve-3d;
   }
   
-  .feature-title {
+  .parkpal-feature-title {
     font-size: 1.75rem;
     font-weight: 700;
     background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.9) 100%);
@@ -221,73 +167,60 @@
     transition: transform 0.6s ease;
   }
   
-  .feature-card:hover .feature-title {
-    transform: translateZ(10px);
-  }
-  
-  .feature-description {
+  .parkpal-feature-description {
     color: rgba(255, 255, 255, 0.75);
     line-height: 1.8;
     font-size: 1.1rem;
     transition: all 0.6s ease;
   }
   
-  .feature-card:hover .feature-description {
-    color: rgba(255, 255, 255, 0.85);
-    transform: translateZ(5px);
-  }
-  
-  /* Enhanced Animations */
-  @keyframes shimmer {
+  /* Animations */
+  @keyframes parkpalShimmer {
     0%, 100% { opacity: 0.3; transform: translateX(-100%); }
     50% { opacity: 0.6; transform: translateX(100%); }
   }
   
-  @keyframes pulseWidth {
+  @keyframes parkpalPulseWidth {
     0%, 100% { width: 80px; opacity: 0.5; }
     50% { width: 120px; opacity: 0.8; }
   }
   
-  .animate-on-scroll {
+  .parkpal-animate {
     opacity: 0;
     transform: translateY(40px);
     transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
-  .animate-on-scroll.visible {
+  .parkpal-animate.visible {
     opacity: 1;
     transform: translateY(0);
   }
   
-  /* Responsive Design */
+  /* Responsive */
   @media (max-width: 1024px) {
-    .features-section {
+    .parkpal-features {
       padding: 8rem 0;
     }
   
-    .section-header {
+    .parkpal-features-header {
       margin-bottom: 5rem;
     }
   
-    .features-grid {
+    .parkpal-features-grid {
       gap: 2rem;
-    }
-  
-    .feature-card {
-      padding: 2.5rem;
     }
   }
   
   @media (max-width: 768px) {
-    .features-section {
+    .parkpal-features {
       padding: 6rem 0;
     }
   
-    .container {
+    .parkpal-container {
       padding: 0 1.5rem;
     }
   
-    .feature-card {
+    .parkpal-feature-card {
       flex-direction: column;
       align-items: center;
       text-align: center;
@@ -295,33 +228,20 @@
       gap: 2rem;
     }
   
-    .feature-icon-wrapper {
+    .parkpal-feature-icon-wrapper {
       width: 4.5rem;
       height: 4.5rem;
-    }
-  
-    .feature-icon {
-      width: 2.25rem;
-      height: 2.25rem;
     }
   }
   
   /* Reduce Motion */
   @media (prefers-reduced-motion: reduce) {
-    .features-section,
-    .feature-card,
-    .feature-icon-wrapper,
-    .animate-on-scroll {
+    .parkpal-features,
+    .parkpal-feature-card,
+    .parkpal-animate {
       transition: none !important;
       animation: none !important;
     }
-  
-    .feature-card:hover {
-      transform: none;
-    }
-  
-    .feature-card::before,
-    .feature-card::after {
-      display: none;
-    }
   }
+
+  
