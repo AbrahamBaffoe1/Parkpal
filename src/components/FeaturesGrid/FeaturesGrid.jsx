@@ -2,7 +2,32 @@ import React, { useEffect, useRef } from 'react';
 import { MapPin, Car, Shield, Star, Clock, CreditCard } from 'lucide-react';
 import './FeaturesGrid.css';
 
+
+
 export function FeaturesGrid() {
+// Add this to your useEffect
+useEffect(() => {
+  const cards = document.querySelectorAll('.parkpal-feature-card');
+  
+  const handleMouseMove = (e) => {
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  };
+
+  document.addEventListener('mousemove', handleMouseMove);
+  
+  return () => {
+    document.removeEventListener('mousemove', handleMouseMove);
+  };
+}, []);
+
+
   const features = [
     {
       icon: <MapPin />,
@@ -37,8 +62,10 @@ export function FeaturesGrid() {
   ];
 
   const observerRef = useRef(null);
+  const featuresSectionRef = useRef(null);
   
   useEffect(() => {
+    // Intersection Observer for fade-in animations
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -57,15 +84,48 @@ export function FeaturesGrid() {
       observerRef.current.observe(element);
     });
 
+    // Particle animation setup
+    const createParticle = () => {
+      if (!featuresSectionRef.current) return;
+      
+      const particle = document.createElement('div');
+      particle.className = 'cyber-particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      particle.style.opacity = Math.random() * 0.5 + 0.2;
+      
+      featuresSectionRef.current.appendChild(particle);
+      
+      setTimeout(() => {
+        if (particle.parentNode === featuresSectionRef.current) {
+          featuresSectionRef.current.removeChild(particle);
+        }
+      }, 5000);
+    };
+
+    // Create particles periodically
+    const particleInterval = setInterval(createParticle, 1000);
+
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
+      clearInterval(particleInterval);
     };
   }, []);
 
   return (
-    <section className="parkpal-features">
+    <section className="parkpal-features" ref={featuresSectionRef}>
+      {/* Cyber grid and effects */}
+      <div className="cyber-particles">
+        <div className="cyber-particle-container"></div>
+      </div>
+      <div className="neon-lines">
+        <div className="neon-line"></div>
+        <div className="neon-line"></div>
+        <div className="neon-line"></div>
+      </div>
+
       <div className="parkpal-container">
         <div className="parkpal-features-header">
           <h2 className="parkpal-features-title parkpal-animate">
@@ -91,11 +151,15 @@ export function FeaturesGrid() {
                 <div className="parkpal-feature-icon">
                   {feature.icon}
                 </div>
+                {/* Additional holographic effect */}
+                <div className="icon-hologram"></div>
               </div>
               <div className="parkpal-feature-content">
                 <h3 className="parkpal-feature-title">{feature.title}</h3>
                 <p className="parkpal-feature-description">{feature.description}</p>
               </div>
+              {/* Card border glow effect */}
+              <div className="card-glow"></div>
             </div>
           ))}
         </div>

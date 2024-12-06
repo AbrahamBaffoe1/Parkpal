@@ -1,38 +1,188 @@
 /* FeaturesGrid.css */
-.parkpal-features {
-    position: relative;
-    padding: 10rem 0;
-    background: 
-      radial-gradient(circle at 20% 0%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
-      radial-gradient(circle at 80% 100%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-      linear-gradient(180deg, var(--primary-dark, #0a0a0a) 0%, rgba(10, 10, 10, 0.95) 100%);
-    overflow: hidden;
+:root {
+    --primary-purple: rgba(147, 51, 234, 1);
+    --primary-indigo: rgba(99, 102, 241, 1);
+    --neon-blue: rgba(56, 182, 255, 0.8);
+    --neon-purple: rgba(190, 75, 255, 0.8);
+    --hologram-blue: rgba(64, 224, 253, 0.15);
+    --cyber-grid: rgba(147, 51, 234, 0.03);
+    --gradient-primary: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-indigo) 100%);
+    --gradient-hover: linear-gradient(135deg, var(--primary-indigo) 0%, var(--primary-purple) 100%);
+    --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   
+  /* Main Section */
+  .parkpal-features {
+    position: relative;
+    padding: 10rem 0;
+    background: linear-gradient(180deg, #0a0a0a 0%, #070707 100%);
+    overflow: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Cyber Grid Background */
   .parkpal-features::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(147, 51, 234, 0.3) 50%,
-      transparent 100%
-    );
-    animation: parkpalShimmer 8s infinite;
+    inset: -100% -50%;
+    background-image: 
+      linear-gradient(var(--cyber-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--cyber-grid) 1px, transparent 1px);
+    background-size: 50px 50px;
+    transform: rotateX(45deg) scale(2);
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
   }
   
+  /* Holographic Overlay */
+  .parkpal-features::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  /* Floating Particles */
+  .cyber-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: floatUp linear forwards;
+  }
+  
+  @keyframes floatUp {
+    0% {
+      transform: translateY(100vh) scale(0);
+      opacity: 0;
+    }
+    20% {
+      opacity: var(--particle-opacity);
+    }
+    80% {
+      opacity: var(--particle-opacity);
+    }
+    100% {
+      transform: translateY(-20vh) scale(1);
+      opacity: 0;
+    }
+  }
+
+  /* Icon Hologram Effect */
+.icon-hologram {
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(
+      135deg,
+      transparent,
+      rgba(56, 182, 255, 0.1),
+      transparent
+    );
+    border-radius: inherit;
+    animation: hologramRotate 4s linear infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes hologramRotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .cyber-particles::before,
+  .cyber-particles::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(
+      circle at center,
+      var(--neon-blue) 0%,
+      transparent 10%
+    );
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    opacity: 0.3;
+    animation: particlesDrift 20s linear infinite;
+  }
+  
+  .cyber-particles::after {
+    background-image: radial-gradient(
+      circle at center,
+      var(--neon-purple) 0%,
+      transparent 10%
+    );
+    animation-direction: reverse;
+    animation-duration: 25s;
+  }
+
+  /* Card Glow Effect */
+.card-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at var(--mouse-x) var(--mouse-y),
+      rgba(56, 182, 255, 0.1) 0%,
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  
+  .parkpal-feature-card:hover .card-glow {
+    opacity: 1;
+  }
+  
+  /* Neon Lines */
+  .neon-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  
+  .neon-line {
+    position: absolute;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--neon-blue),
+      transparent
+    );
+    height: 1px;
+    width: 100%;
+    opacity: 0;
+    animation: neonScan 10s linear infinite;
+  }
+  
+  .neon-line:nth-child(1) { top: 20%; animation-delay: 0s; }
+  .neon-line:nth-child(2) { top: 40%; animation-delay: -3.33s; }
+  .neon-line:nth-child(3) { top: 60%; animation-delay: -6.66s; }
+  
+  /* Container */
   .parkpal-container {
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 0 2rem;
     position: relative;
     z-index: 2;
   }
   
+  /* Header Section */
   .parkpal-features-header {
     text-align: center;
     margin-bottom: 6rem;
@@ -49,6 +199,22 @@
     margin-bottom: 2rem;
     position: relative;
     letter-spacing: -0.02em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .parkpal-features-title::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+      transparent,
+      rgba(147, 51, 234, 0.5),
+      transparent
+    );
   }
   
   .parkpal-features-title::after {
@@ -76,6 +242,7 @@
     line-height: 1.8;
   }
   
+  /* Features Grid */
   .parkpal-features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -83,6 +250,7 @@
     perspective: 1000px;
   }
   
+  /* Feature Card */
   .parkpal-feature-card {
     position: relative;
     background: rgba(255, 255, 255, 0.02);
@@ -90,54 +258,142 @@
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 1.5rem;
     padding: 3rem;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     display: flex;
     align-items: flex-start;
     gap: 2.5rem;
     overflow: hidden;
     transform-style: preserve-3d;
+    will-change: transform, box-shadow;
+    transition: all 0.6s var(--transition-bounce);
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: cardEntrance 0.8s var(--transition-bounce) backwards;
+    --mouse-x: 50%;
+    --mouse-y: 50%;
   }
   
-  .parkpal-feature-card::before,
+  /* Holographic Card Effects */
+  .parkpal-feature-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(
+      135deg,
+      transparent 40%,
+      rgba(56, 182, 255, 0.1),
+      rgba(190, 75, 255, 0.1)
+    );
+    border-radius: inherit;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+    animation: holographicBorder 8s linear infinite;
+  }
+  
   .parkpal-feature-card::after {
     content: '';
     position: absolute;
-    border-radius: inherit;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  
-  .parkpal-feature-card::before {
-    inset: 0;
+    inset: -1px;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.03) 0%,
-      rgba(255, 255, 255, 0) 100%
+      rgba(147, 51, 234, 0.1) 0%,
+      rgba(99, 102, 241, 0.1) 100%
     );
     opacity: 0;
+    z-index: -1;
+  }
+
+  /* Enhanced Feature Card Hover */
+.parkpal-feature-card {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
   }
   
+  /* Smooth transition for holographic effects */
+  .parkpal-feature-card::before,
+  .parkpal-feature-card::after,
+  .icon-hologram,
+  .card-glow {
+    transition: all 0.3s var(--transition-bounce);
+  }
+  
+  /* Neon pulse for icons */
+  .parkpal-feature-icon {
+    animation: iconPulse 4s ease-in-out infinite;
+  }
+  
+  @keyframes iconPulse {
+    0%, 100% {
+      filter: drop-shadow(0 0 8px rgba(56, 182, 255, 0.3));
+    }
+    50% {
+      filter: drop-shadow(0 0 12px rgba(190, 75, 255, 0.4));
+    }
+  }
+  
+  /* Add this script to track mouse movement for glow effect */
+  [data-glow] {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+  }
+  
+  /* Card Hover Effects */
   .parkpal-feature-card:hover {
-    transform: translateY(-10px) scale(1.02) rotateX(2deg);
-    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px) scale(1.02);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(56, 182, 255, 0.2);
     box-shadow: 
       0 25px 50px rgba(0, 0, 0, 0.3),
-      0 0 60px rgba(147, 51, 234, 0.1);
+      0 0 30px rgba(56, 182, 255, 0.2),
+      inset 0 0 20px rgba(190, 75, 255, 0.1);
+    --mouse-x: 100%;
+    --mouse-y: 100%;
   }
   
+  .parkpal-feature-card:hover::before,
+  .parkpal-feature-card:hover::after {
+    opacity: 1;
+  }
+  
+  /* Icon Styles */
   .parkpal-feature-icon-wrapper {
     width: 5rem;
     height: 5rem;
-    background: linear-gradient(135deg, 
-      rgba(147, 51, 234, 0.8) 0%,
-      rgba(99, 102, 241, 0.8) 100%
-    );
+    background: var(--gradient-primary);
     border-radius: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     flex-shrink: 0;
-    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.6s var(--transition-bounce);
+    overflow: hidden;
+  }
+  
+  .parkpal-feature-icon-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: inherit;
+    border-radius: inherit;
+    opacity: 0;
+    filter: blur(12px);
+    transition: all 0.6s ease;
+  }
+  
+  .parkpal-feature-icon-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      45deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: iconScan 3s ease-in-out infinite;
   }
   
   .parkpal-feature-icon {
@@ -150,9 +406,48 @@
     transition: transform 0.6s ease;
   }
   
+  /* Icon Hover Effects */
+  .parkpal-feature-card:hover .parkpal-feature-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--gradient-hover);
+  }
+  
+  .parkpal-feature-card:hover .parkpal-feature-icon-wrapper::before {
+    opacity: 0.5;
+    inset: -4px;
+  }
+  
+  .parkpal-feature-card:hover .parkpal-feature-icon {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(147, 51, 234, 0.3));
+  }
+  
+  /* Content Styles */
   .parkpal-feature-content {
     flex-grow: 1;
     transform-style: preserve-3d;
+    position: relative;
+  }
+  
+  .parkpal-feature-content::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: -10%;
+    right: -10%;
+    bottom: -10%;
+    background: radial-gradient(
+      circle at center,
+      rgba(147, 51, 234, 0.05),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+  }
+  
+  .parkpal-feature-card:hover .parkpal-feature-content::before {
+    opacity: 1;
   }
   
   .parkpal-feature-title {
@@ -172,9 +467,34 @@
     line-height: 1.8;
     font-size: 1.1rem;
     transition: all 0.6s ease;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Content Hover Effects */
+  .parkpal-feature-card:hover .parkpal-feature-title {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0.95) 100%
+    );
+  }
+  
+  .parkpal-feature-card:hover .parkpal-feature-description {
+    color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
   }
   
   /* Animations */
+  @keyframes gridMove {
+    0% {
+      transform: rotateX(45deg) translateY(0);
+    }
+    100% {
+      transform: rotateX(45deg) translateY(50px);
+    }
+  }
+  
   @keyframes parkpalShimmer {
     0%, 100% { opacity: 0.3; transform: translateX(-100%); }
     50% { opacity: 0.6; transform: translateX(100%); }
@@ -185,10 +505,74 @@
     50% { width: 120px; opacity: 0.8; }
   }
   
+  @keyframes particlesDrift {
+    0% {
+      transform: translateY(0) rotate(0deg);
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+    }
+  }
+  
+  @keyframes neonScan {
+    0% {
+      transform: translateY(0) translateX(-100%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0) translateX(100%);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes holographicBorder {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  @keyframes iconScan {
+    0% {
+      transform: translateX(-100%) skewX(45deg);
+    }
+    100% {
+      transform: translateX(200%) skewX(45deg);
+    }
+  }
+  
+  @keyframes cardEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  /* Entrance Animation Delays */
+  .parkpal-feature-card:nth-child(1) { animation-delay: 0.1s; }
+  .parkpal-feature-card:nth-child(2) { animation-delay: 0.2s; }
+  .parkpal-feature-card:nth-child(3) { animation-delay: 0.3s; }
+  .parkpal-feature-card:nth-child(4) { animation-delay: 0.4s; }
+  .parkpal-feature-card:nth-child(5) { animation-delay: 0.5s; }
+  .parkpal-feature-card:nth-child(6) { animation-delay: 0.6s; }
+  
+  /* Scroll Animation */
   .parkpal-animate {
     opacity: 0;
     transform: translateY(40px);
-    transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 1s var(--transition-bounce);
   }
   
   .parkpal-animate.visible {
@@ -196,28 +580,75 @@
     transform: translateY(0);
   }
   
-  /* Responsive */
-  @media (max-width: 1024px) {
+  /* Responsive Design */
+  @media (min-width: 2000px) {
+    .parkpal-container {
+      max-width: 1800px;
+    }
+  
+    .parkpal-features-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem;
+    }
+  
+    .parkpal-feature-card {
+      padding: 3.5rem;
+    }
+  }
+  
+  @media (min-width: 1440px) and (max-width: 1999px) {
+    .parkpal-container {
+      max-width: 1600px;
+    }
+  
+    .parkpal-features-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  
+  @media (min-width: 1024px) and (max-width: 1439px) {
+    .parkpal-container {
+      max-width: 1200px;
+    }
+  
+    .parkpal-features-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.5rem;
+    }
+  }
+  
+  @media (min-width: 768px) and (max-width: 1023px) {
     .parkpal-features {
       padding: 8rem 0;
     }
   
-    .parkpal-features-header {
-      margin-bottom: 5rem;
+    .parkpal-container {
+      max-width: 900px;
     }
   
     .parkpal-features-grid {
+      grid-template-columns: repeat(2, 1fr);
       gap: 2rem;
+    }
+  
+    .parkpal-feature-card {
+      padding: 2.5rem;
     }
   }
   
-  @media (max-width: 768px) {
+  @media (max-width: 767px) {
     .parkpal-features {
       padding: 6rem 0;
     }
   
     .parkpal-container {
       padding: 0 1.5rem;
+    }
+  
+    .parkpal-features-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
     }
   
     .parkpal-feature-card {
@@ -234,14 +665,32 @@
     }
   }
   
-  /* Reduce Motion */
+  @media (max-width: 480px) {
+    .parkpal-feature-card {
+      padding: 2rem 1.5rem;
+    }
+  
+    .parkpal-feature-icon-wrapper {
+      width: 4rem;
+      height: 4rem;
+    }
+  
+    .parkpal-feature-icon {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+  
+  /* Reduced Motion */
   @media (prefers-reduced-motion: reduce) {
-    .parkpal-features,
+    .parkpal-features::before,
+    .parkpal-features::after,
+    .cyber-particles,
+    .neon-lines,
     .parkpal-feature-card,
+    .parkpal-feature-icon-wrapper::after,
     .parkpal-animate {
       transition: none !important;
       animation: none !important;
     }
   }
-
-  
