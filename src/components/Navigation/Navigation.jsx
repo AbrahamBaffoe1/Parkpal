@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Menu, X, Sun, Moon } from 'lucide-react';
 import './Navigation.css';
+import { Link, useNavigate } from 'react-router-dom';
+// import { PreLoginPage } from '../prelogin/PreLogin';
 
   /**
    * A navigation component that is used in the main layout of the application.
@@ -14,6 +16,7 @@ import './Navigation.css';
    * @returns {JSX.Element} The navigation component.
    */
 export function Navigation() {
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
@@ -36,7 +39,8 @@ export function Navigation() {
     { href: "/about", text: "About" },
     { href: "/features", text: "Features" },
     { href: "/pricing", text: "Pricing" },
-    { href: "/contact", text: "Contact" }
+    { href: "/contact", text: "Contact" },
+    // { href: "/PreLogin", text: "Get Started" }
   ];
 
   return (
@@ -84,12 +88,16 @@ export function Navigation() {
           </button>
           
           <a 
-            href="/login" 
-            className="#"
-            onClick={() => setIsMobileMenuOpen(false)}
+            href="/PreLogin"
+            className="nav-link"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              navigate('/PreLogin');
+            }}
           >
-            <span className="button-text special">Get Started</span>
-            {/* <ChevronRight className="button-icon" /> */}
+            <span className="button-text special">Get Started
+              <ChevronRight className="button-icon" />
+            </span>
           </a>
         </div>
       </div>

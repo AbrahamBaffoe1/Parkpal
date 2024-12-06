@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Landing } from './components/landing/Landing';
 import { Error404 } from './components/Error404/Error404';
 import ConsentBanner from './components/ConsentBanner/ConsentBanner';  
+import { PreLoginPage } from './components/PreLogin/PreLogin';
+
+
+
 import './App.css';
 
 function App() {
@@ -11,6 +15,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="*" element={<Error404 />} />
+        <Route path="/PreLogin" element={<PreLoginPage />} />
         {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         {/* <Route path="/parking" element={<ParkingSearch />} /> */}
         {/* <Route path="/bookings" element={<Bookings />} /> */}
