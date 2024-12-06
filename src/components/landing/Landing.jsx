@@ -11,10 +11,10 @@ import { Banner } from '../Banner/Banner';
 import { Navigation } from '../Navigation/Navigation';
 import { Cta } from '../sections/Cta';
 import { HeroSection } from '../HeroSection/HeroSection';
-// footer
 import { Footer } from '../Footer/Footer';
-
 import './Landing.css';
+
+
 
 export function Landing() {
   const parallaxRef = useRef(null);

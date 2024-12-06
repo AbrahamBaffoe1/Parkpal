@@ -5,32 +5,10 @@
   overflow-x: hidden;
 }
 
-/* Banner */
-.banner {
-  background: var(--gradient-purple);
-  padding: 0.75rem;
-  text-align: center;
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
 
-.banner-button {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.25rem 1rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  transition: var(--transition-all);
-}
-
-.banner-button:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
 
 /* Hero Section */
-.hero {
+/* .hero {
   padding: 6rem 1rem;
   text-align: center;
   position: relative;
@@ -128,7 +106,7 @@
 .stat-label {
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.875rem;
-}
+} */
 
 /* Features Section */
 .features {

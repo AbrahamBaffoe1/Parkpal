@@ -1,4 +1,6 @@
 import React from 'react';
+import './Banner.css';
+
 import { ChevronRight } from 'lucide-react';
 
 export function Banner() {

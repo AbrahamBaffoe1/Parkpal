@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
+import './HeroSection.css';
 
 export function HeroSection() {
   return (
@@ -7,7 +8,7 @@ export function HeroSection() {
       <div className="hero-content parallax" data-rate="0.5">
         <h1 className="hero-title animate-on-scroll">
           Find Perfect
-          <span className="gradient-text">Parking Spots</span>
+          <span className="text-gradient">Parking Spots</span>
           In Seconds
         </h1>
         <p className="hero-description animate-on-scroll">
