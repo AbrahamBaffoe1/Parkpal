@@ -4,6 +4,10 @@
   --primary-purple: #9333EA;
   --primary-indigo: #6366F1;
   --primary-gradient: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-indigo) 100%);
+  --theme-light-bg: rgba(255, 255, 255, 0.95);
+  --theme-dark-bg: rgba(17, 17, 17, 0.95);
+  --theme-light-text: var(--gray-900);
+  --theme-dark-text: var(--white);
   
   /* UI Colors */
   --white: #ffffff;
@@ -22,6 +26,7 @@
   --glass-border: rgba(255, 255, 255, 0.12);
   --glass-shine: rgba(255, 255, 255, 0.05);
   
+  
   /* Shadows & Effects */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -33,6 +38,18 @@
   --transition-fast: 200ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-standard: 300ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='light'] {
+  --nav-bg: var(--theme-light-bg);
+  --text-color: var(--theme-light-text);
+  --border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --nav-bg: var(--theme-dark-bg);
+  --text-color: var(--theme-dark-text);
+  --border-color: var(--glass-border);
 }
 
 /* Base Navigation */
@@ -339,4 +356,62 @@
   .nav-link {
     color: CanvasText;
   }
+}
+
+/* Add these theme toggle styles to your Navigation.css */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: var(--white);
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: var(--transition-standard);
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-icon {
+  color: var(--white);
+  opacity: 0.8;
+  transition: var(--transition-standard);
+}
+
+.theme-toggle:hover .theme-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Update mobile styles for theme toggle */
+@media (max-width: 768px) {
+  .theme-toggle {
+    margin: 1rem 0;
+    width: 100%;
+    max-width: 320px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 0.875rem;
+  }
+
+  .nav-links-mobile-open .theme-toggle {
+    animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    animation-delay: 0.45s;
+    opacity: 0;
+  }
+}
+
+/* special effect */
+.special {
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 2rem 0;
+color: var( --primary-light);
+
 }

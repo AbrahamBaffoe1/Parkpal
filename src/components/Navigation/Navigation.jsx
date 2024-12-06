@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight, Menu, X, Sun, Moon } from 'lucide-react';
 import './Navigation.css';
 
+  /**
+   * A navigation component that is used in the main layout of the application.
+   *
+   * The component renders a navigation menu with links to the main pages of the
+   * application, as well as a button to toggle the theme of the application.
+   *
+   * The component also handles scrolling and changes the style of the navigation
+   * bar when the user scrolls.
+   *
+   * @returns {JSX.Element} The navigation component.
+   */
 export function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -74,11 +85,11 @@ export function Navigation() {
           
           <a 
             href="/login" 
-            className="nav-button"
+            className="#"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            <span className="button">Get Started</span>
-            <ChevronRight className="button-icon" />
+            <span className="button-text special">Get Started</span>
+            {/* <ChevronRight className="button-icon" /> */}
           </a>
         </div>
       </div>
