@@ -6,68 +6,6 @@
 }
 
 
-
-/* Hero Section */
-/* .hero {
-  padding: 6rem 1rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::before,
-.hero::after {
-  content: '';
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.15;
-  animation: glow 10s infinite;
-}
-
-.hero::before {
-  background: var(--accent-purple);
-  top: -200px;
-  left: -200px;
-}
-
-.hero::after {
-  background: var(--accent-indigo);
-  top: -200px;
-  right: -200px;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.hero-title {
-  font-size: clamp(3rem, 8vw, 5rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-}
-
-.hero-title span {
-  display: block;
-  background: var(--gradient-purple);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.hero-description {
-  font-size: clamp(1.1rem, 2vw, 1.25rem);
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 600px;
-  margin: 0 auto 2rem;
-}
-
 /* Stats Section */
 .stats {
   display: grid;
@@ -231,67 +169,6 @@
   }
 }
 
-/* Navigation Styles */
-.nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.nav-logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: var(--gradient-purple);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-decoration: none;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-
-.nav-link {
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  transition: var(--transition-all);
-  font-weight: 500;
-}
-
-.nav-link:hover {
-  color: var(--primary-light);
-}
-
-.nav-button {
-  background: var(--gradient-purple);
-  color: white;
-  padding: 0.5rem 1.25rem;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  transition: var(--transition-all);
-}
-
-.nav-button:hover {
-  transform: scale(1.05);
-  box-shadow: var(--shadow-glow);
-}
 
 /* Animation Classes */
 .fade-up {

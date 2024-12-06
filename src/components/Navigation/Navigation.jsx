@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
+import './Navigation.css';
 
 export function Navigation() {
   return (
