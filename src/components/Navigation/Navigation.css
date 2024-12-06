@@ -192,6 +192,22 @@
   transition: var(--transition-standard);
 }
 
+/* Update mobile menu transition */
+@media (max-width: 768px) {
+  .nav-links {
+    transition: all var(--transition-standard);
+    transform: translateX(100%);
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .nav-links-mobile-open {
+    transform: translateX(0);
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
 /* Enhanced Mobile Styles */
 @media (max-width: 1024px) {
   .nav-links {

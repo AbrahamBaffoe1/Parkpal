@@ -1,47 +1,96 @@
-import React from 'react';
-import { MapPin, Car, Shield, Star } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { MapPin, Car, Shield, Star, Clock, CreditCard } from 'lucide-react';
+import './FeaturesGrid.css';
 
 export function FeaturesGrid() {
   const features = [
     {
       icon: <MapPin />,
-      title: "Real-time Availability",
-      description: "Find open parking spots instantly in your desired location."
+      title: "Real-time Location Intelligence",
+      description: "Advanced GPS tracking shows real-time parking availability with 99.9% accuracy across all supported locations."
     },
     {
       icon: <Car />,
-      title: "Easy Booking",
-      description: "Reserve your spot in advance with just a few taps."
+      title: "Smart Booking System",
+      description: "AI-powered booking system learns from your preferences to suggest optimal parking spots and routes."
     },
     {
       icon: <Shield />,
-      title: "Secure Payments",
-      description: "Safe and encrypted transactions for peace of mind."
+      title: "Enterprise-grade Security",
+      description: "Bank-level encryption and multi-factor authentication ensure your transactions are always protected."
     },
     {
       icon: <Star />,
-      title: "User Reviews",
-      description: "Make informed decisions with community feedback."
+      title: "Verified Reviews & Insights",
+      description: "Make informed decisions with our curated review system featuring detailed ratings and user experiences."
+    },
+    {
+      icon: <Clock />,
+      title: "Predictive Availability",
+      description: "Our machine learning algorithms predict parking spot availability up to 24 hours in advance."
+    },
+    {
+      icon: <CreditCard />,
+      title: "Seamless Payments",
+      description: "Integrated payment system supports all major cards, digital wallets, and corporate accounts."
     }
   ];
+
+  // Intersection Observer setup for animations
+  const observerRef = useRef(null);
+  
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px',
+      }
+    );
+
+    // Observe all animated elements
+    document.querySelectorAll('.animate-on-scroll').forEach((element) => {
+      observerRef.current.observe(element);
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
 
   return (
     <section className="features-section">
       <div className="container">
         <div className="section-header">
-          <h2 className="section-title animate-on-scroll">Why Choose ParkPal?</h2>
+          <h2 className="section-title animate-on-scroll">
+            Enterprise Solutions for Modern Parking
+          </h2>
           <p className="section-description animate-on-scroll">
-            Our platform offers a seamless parking experience with real-time availability, easy booking, secure payments, and trusted user reviews.
+            ParkPal leverages cutting-edge technology to revolutionize the parking experience. 
+            Our enterprise-grade platform delivers unmatched reliability, security, and convenience 
+            to businesses and individuals alike.
           </p>
         </div>
         <div className="features-grid">
           {features.map((feature, index) => (
             <div
               key={index}
-              className={`feature-card glass-card animate-on-scroll fade-up-delay-${index + 1}`}
+              className={`feature-card animate-on-scroll`}
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+                transitionDelay: `${index * 0.1}s`
+              }}
             >
               <div className="feature-icon-wrapper">
-                <div className="feature-icon">{feature.icon}</div>
+                {feature.icon}
               </div>
               <div className="feature-content">
                 <h3 className="feature-title">{feature.title}</h3>
