@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, Menu, X, Sun, Moon } from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './PreLogin.css';
 
 export function PreLoginPage() {
+  const navigate = useNavigate();
+
+  const handleSignIn = () => {
+    navigate('/auth/login');
+  };
+
+  const handleRegister = () => {
+    navigate('/auth/register');
+  };
+
+
   return (
     <div className="prelogin-container">
       <div className="prelogin-content">
@@ -13,12 +25,12 @@ export function PreLoginPage() {
         </div>
         
         <div className="prelogin-cta">
-          <a href="/auth/signin" className="prelogin-button signin">
-            <span>Sign In</span>
+          <a href="#" className="prelogin-button signin" onClick={handleSignIn}>
+            <span>Log In</span>
             <ArrowRight size={20} />
           </a>
           
-          <a href="/auth/register" className="prelogin-button register">
+          <a href="#" className="prelogin-button register" onClick={handleRegister}>
             <span>Register</span>
             <ArrowRight size={20} />
           </a>
