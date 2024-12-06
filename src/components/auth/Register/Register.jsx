@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, AtSign, Lock, User } from 'lucide-react';
+import axios from 'axios';
 import './Register.css';
 
 function RegisterPage() {
@@ -8,14 +9,16 @@ function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault();
     try {
-      await register(name, email, password);
-      navigate('/dashboard');
-    } catch (error) {
-      console.error('Registration error:', error);
-      // Handle registration error
+      await axios.post('/api/auth/register', { name, email, password });
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+      setError(err.response.data.message);
     }
   };
 
@@ -27,6 +30,7 @@ function RegisterPage() {
           <p className="register-subtitle">Sign up to start your journey</p>
         </div>
         <div className="register-content">
+          {error && <div className="error-message">{error}</div>}
           <div className="form-group">
             <label htmlFor="name" className="form-label">
               Name

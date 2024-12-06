@@ -13,11 +13,9 @@ import { Cta } from '../sections/Cta';
 import { HeroSection } from '../HeroSection/HeroSection';
 import { Footer } from '../Footer/Footer';
 import './Landing.css';
-import '../../styles/colorScheme.css'; 
+import '../../styles/colorScheme.css';
 
-
-
-export function useColorScheme() {
+function useColorScheme() {
   const [colorScheme, setColorScheme] = useState(1);
 
   useEffect(() => {
@@ -31,7 +29,7 @@ export function useColorScheme() {
   return colorScheme;
 }
 
-export function Landing() {
+function Landing() {
   const parallaxRef = useRef(null);
   const colorScheme = useColorScheme();
 
@@ -70,46 +68,23 @@ export function Landing() {
     };
   }, []);
 
-  
-
-
   return (
     <div className={`landing-page color-scheme-${colorScheme}`}>
-    <div className="landing-page" ref={parallaxRef}>
-    
-      <CustomCursor />
-      
-      {/* Banner */}
-      <Banner />
-
-      {/* Navigation */}
-      <Navigation />
-
-      {/* Hero Section */}
-      <HeroSection />
-
-      {/* Features Grid */}
-      <FeaturesGrid />
-
-      {/* CTA Section */}
-      <Cta />
-
-      {/* Pricing Section */}
-      <PricingSection />
-
-      {/* Integrations Section */}
-      <IntegrationsSection />
-
-      {/* Testimonials Section */}
-      <TestimonialsSection />
-
-      {/* FAQ Section */}
-      <FAQSection />
-
-      {/* Footer */}
-      <Footer />
+      <div className="landing-page" ref={parallaxRef}>
+        <CustomCursor />
+        <Banner />
+        <Navigation />
+        <HeroSection />
+        <FeaturesGrid />
+        <Cta />
+        <PricingSection />
+        <IntegrationsSection />
+        <TestimonialsSection />
+        <FAQSection />
+        <Footer />
+      </div>
     </div>
-    </div>
-   
   );
 }
+
+export default Landing;

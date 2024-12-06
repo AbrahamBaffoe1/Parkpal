@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, AtSign, Lock } from 'lucide-react';
+import axios from 'axios';
 import './Login.css';
 
 function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      await login(email, password);
+      const response = await axios.post('/api/auth/login', { email, password });
+      localStorage.setItem('token', response.data.token);
       navigate('/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-      // Handle login error
+    } catch (err) {
+      console.error(err);
+      setError(err.response.data.message);
     }
   };
 
@@ -25,6 +29,7 @@ function LoginPage() {
           <h2 className="login-title">Login to ParkPal</h2>
         </div>
         <div className="login-content">
+          {error && <div className="error-message">{error}</div>}
           <div className="form-group">
             <label htmlFor="email" className="form-label">
               Email

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, Menu, X, Sun, Moon } from 'lucide-react';
+// src/components/PreLogin/PreLogin.jsx
+import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './PreLogin.css';
 
-export function PreLoginPage() {
+function PreLoginPage() {
   const navigate = useNavigate();
 
   const handleSignIn = () => {
@@ -15,7 +15,6 @@ export function PreLoginPage() {
     navigate('/auth/register');
   };
 
-
   return (
     <div className="prelogin-container">
       <div className="prelogin-content">
@@ -25,15 +24,15 @@ export function PreLoginPage() {
         </div>
         
         <div className="prelogin-cta">
-          <a href="#" className="prelogin-button signin" onClick={handleSignIn}>
+          <button className="prelogin-button signin" onClick={handleSignIn}>
             <span>Log In</span>
             <ArrowRight size={20} />
-          </a>
+          </button>
           
-          <a href="#" className="prelogin-button register" onClick={handleRegister}>
+          <button className="prelogin-button register" onClick={handleRegister}>
             <span>Register</span>
             <ArrowRight size={20} />
-          </a>
+          </button>
           
           <p className="prelogin-subtext">
             By continuing, you agree to ParkPal's Terms of Service and Privacy Policy
@@ -63,3 +62,5 @@ export function PreLoginPage() {
     </div>
   );
 }
+
+export default PreLoginPage;
