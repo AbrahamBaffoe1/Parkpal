@@ -3,9 +3,9 @@ import { useEffect, useRef } from 'react';
 import { ArrowRight, MapPin, Car, Shield, Star, ChevronRight, Quote } from 'lucide-react';
 import { CustomCursor } from '../cursor/CustomCursor';
 import { PricingSection } from '../sections/PricingSection';
-import { IntegrationsSection } from '../sections/IntegrationsSection';
+import { IntegrationsSection } from '../IntegrationsSection/IntegrationsSection';
 import { TestimonialsSection } from '../sections/Testimonials';
-import { FaqSection } from '../../assets/FaqSection/FaqSection';
+import { FAQSection } from '../FAQSection/FAQSection';
 import { FeaturesGrid } from '../sections/FeaturesGrid';
 import { Banner } from '../Banner/Banner';
 import { Navigation } from '../Navigation/Navigation';
@@ -14,7 +14,7 @@ import { HeroSection } from '../HeroSection/HeroSection';
 import { Footer } from '../Footer/Footer';
 import './Landing.css';
 
-
+  
 
 export function Landing() {
   const parallaxRef = useRef(null);
@@ -87,7 +87,7 @@ export function Landing() {
       <TestimonialsSection />
 
       {/* FAQ Section */}
-      <FaqSection />
+      <FAQSection />
 
       {/* Footer */}
       <Footer />

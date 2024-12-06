@@ -1,4 +1,10 @@
-// src/components/sections/IntegrationsSection.jsx
+import React from 'react';
+import './IntegrationsSection.css';
+
+
+
+
+
   export function IntegrationsSection() {
     const integrations = [
       {
