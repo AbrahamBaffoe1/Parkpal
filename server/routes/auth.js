@@ -1,4 +1,3 @@
-
 // server/routes/auth.js
 import express from 'express';
 import bcrypt from 'bcrypt';
@@ -30,6 +29,109 @@ const loginValidation = [
     .isLength({ min: 8 })
     .withMessage('Password must be at least 8 characters long')
 ];
+
+// Registration validation middleware
+const registerValidation = [
+  body('name')
+    .trim()
+    .isLength({ min: 2 })
+    .withMessage('Name must be at least 2 characters long'),
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please enter a valid email'),
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters long')
+];
+
+// Registration route
+router.post('/register',
+  registerValidation,
+  asyncHandler(async (req, res) => {
+    // Check validation results
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        status: 'error',
+        message: errors.array()[0].msg
+      });
+    }
+
+    const { name, email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Email already registered'
+      });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user
+    const newUser = await pool.query(
+      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email',
+      [name, email, hashedPassword]
+    );
+
+    // Generate tokens
+    const accessToken = jwt.sign(
+      { userId: newUser.rows[0].id },
+      process.env.JWT_ACCESS_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    const refreshToken = jwt.sign(
+      { userId: newUser.rows[0].id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    // Store refresh token in database
+    await pool.query(
+      'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, NOW() + INTERVAL \'7 days\')',
+      [newUser.rows[0].id, refreshToken]
+    );
+
+    // Set httpOnly cookies
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 1000 // 15 minutes
+    });
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/api/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
+    // Send response
+    res.status(201).json({
+      status: 'success',
+      message: 'Registration successful',
+      data: {
+        user: {
+          id: newUser.rows[0].id,
+          name: newUser.rows[0].name,
+          email: newUser.rows[0].email
+        }
+      }
+    });
+  })
+);
 
 // Login route
 router.post('/login', 

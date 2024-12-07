@@ -4,7 +4,7 @@ import {
   MapPin, Car, Clock, CreditCard, Bell, Settings, 
   LogOut, Search, Menu, X 
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -12,6 +12,7 @@ function Dashboard() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [activeBookings, setActiveBookings] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,12 +23,11 @@ function Dashboard() {
           return;
         }
         
-        const response = await axios.get('/api/user/profile', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUser(response.data);
+        const response = await api.get('/user/profile');
+        setUser(response.data.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
+        setError('Failed to load user data');
         if (error.response?.status === 401) {
           localStorage.removeItem('token');
           window.location.href = '/login';
@@ -40,12 +40,11 @@ function Dashboard() {
         const token = localStorage.getItem('token');
         if (!token) return;
         
-        const response = await axios.get('/api/bookings/active', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setActiveBookings(response.data);
+        const response = await api.get('/bookings/active');
+        setActiveBookings(response.data.data || []);
       } catch (error) {
         console.error('Error fetching bookings:', error);
+        setError('Failed to load bookings');
       } finally {
         setIsLoading(false);
       }
@@ -145,7 +144,11 @@ function Dashboard() {
           <section className="bookings-section">
             <h2>Active Bookings</h2>
             <div className="bookings-grid">
-              {activeBookings && activeBookings.length > 0 ? (
+              {isLoading ? (
+                <div className="loading">Loading bookings...</div>
+              ) : error ? (
+                <div className="error">{error}</div>
+              ) : activeBookings.length > 0 ? (
                 activeBookings.map(booking => (
                   <div key={booking.id} className="booking-card">
                     <div className="booking-header">
@@ -160,9 +163,7 @@ function Dashboard() {
                   </div>
                 ))
               ) : (
-                <div className="no-bookings-message">
-                  No active bookings found
-                </div>
+                <div className="no-bookings">No active bookings found</div>
               )}
             </div>
           </section>

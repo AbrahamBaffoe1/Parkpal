@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, AtSign, Lock } from 'lucide-react';
-// import { Alert, AlertDescription } from '@/components/ui/alert';
 import api from '../../utils/api.js';
 import LoadingSpinner from '../../LoadingSpinner/LoadingSpinner';
 import SuccessScreen from '../../SuccessScreen/SuccessScreen';
@@ -103,9 +102,9 @@ function LoginPage() {
         
         <form onSubmit={handleLogin} className="login-content">
           {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="error-message">
+              {error}
+            </div>
           )}
           
           <div className="form-group">

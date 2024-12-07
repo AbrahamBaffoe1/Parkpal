@@ -28,7 +28,7 @@ api.interceptors.response.use(
 
       try {
         // Try to refresh the token
-        await api.post('/auth/refresh');
+        await api.post('/api/auth/refresh');
         // Retry the original request
         return api(originalRequest);
       } catch (refreshError) {
