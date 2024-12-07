@@ -1,0 +1,316 @@
+/* Dashboard.css */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background: var(--primary-dark, #0a0a0a);
+  }
+  
+  /* Sidebar Styles */
+  .dashboard-sidebar {
+    width: 280px;
+    background: rgba(255, 255, 255, 0.03);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: fixed;
+    height: 100vh;
+    backdrop-filter: blur(20px);
+  }
+  
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 3rem;
+  }
+  
+  .sidebar-header h2 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .sidebar-toggle {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+  
+  .nav-item.active {
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-indigo) 100%);
+    color: white;
+  }
+  
+  .logout-button {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Main Content Styles */
+  .dashboard-main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+  
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 0.75rem 1.5rem;
+    width: 400px;
+  }
+  
+  .search-bar input {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    width: 100%;
+  }
+  
+  .search-bar input:focus {
+    outline: none;
+  }
+  
+  .search-bar svg {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-indigo) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+  
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  .stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .stat-card h3 {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-number {
+    color: white;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  
+  /* Bookings Section */
+  .bookings-section {
+    margin-top: 3rem;
+  }
+  
+  .bookings-section h2 {
+    color: white;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+  
+  .bookings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .booking-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .booking-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  
+  .booking-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .booking-header h3 {
+    color: white;
+    font-size: 1.125rem;
+  }
+  
+  .location-icon {
+    color: var(--primary-purple);
+  }
+  
+  .booking-details {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .booking-details p {
+    margin-bottom: 0.5rem;
+  }
+  
+  .booking-price {
+    color: var(--primary-purple);
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+  
+  /* Loading Spinner */
+  .loading-spinner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .dashboard-sidebar {
+      transform: translateX(-100%);
+      z-index: 1000;
+    }
+  
+    .dashboard-sidebar.open {
+      transform: translateX(0);
+    }
+  
+    .dashboard-main {
+      margin-left: 0;
+    }
+  
+    .search-bar {
+      width: auto;
+      flex: 1;
+      margin-right: 1rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-main {
+      padding: 1rem;
+    }
+  
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .bookings-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .dashboard-header {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  
+    .search-bar {
+      width: 100%;
+    }
+  }
+
+  .dashboard-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+  }
+  
+  .loading-spinner {
+    color: #6366f1;
+    font-size: 1.2rem;
+    /* Add your spinner animation here if needed */
+  }
+  
+  .no-bookings-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e9ecef;
+  }

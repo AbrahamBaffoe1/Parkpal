@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, AtSign, Lock, User } from 'lucide-react';
-import axios from 'axios';
+import api from '../../utils/api';
+import SuccessScreen from '../../SuccessScreen/SuccessScreen';
 import './Register.css';
 
 function RegisterPage() {
@@ -10,15 +11,45 @@ function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (isSuccess) {
+    return <SuccessScreen message="Registration successful!" redirectTo="/dashboard" delay={3000} />;
+  }
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsLoading(true);
+    
     try {
-      await axios.post('/api/auth/register', { name, email, password });
-      navigate('/login');
+      const response = await api.post('/auth/register', { 
+        name, 
+        email, 
+        password 
+      });
+      
+      if (response.data?.status === 'success') {
+        // Store the token
+        localStorage.setItem('token', response.data.data.token);
+        // Store user data
+        localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        
+        setIsSuccess(true);
+        
+        // Navigate to dashboard after delay
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 3000);
+      } else {
+        setError('Invalid response from server');
+      }
     } catch (err) {
       console.error(err);
-      setError(err.response.data.message);
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
