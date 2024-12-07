@@ -11,7 +11,6 @@ import { protectedRoutes } from './routes/protected.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { pool } from './db/pool.js';
 
-// Configuration
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 dotenv.config();
@@ -20,11 +19,17 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(helmet({
+  contentSecurityPolicy: false // This allows loading of scripts
+}));
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : 'http://localhost:5173',
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.FRONTEND_URL 
+    : 'http://localhost:5173',
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -33,18 +38,25 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api', protectedRoutes);
 
-// Static files and client routing
-app.use(express.static(path.join(__dirname, '../dist')));
+// Serve static files from the React app
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+}
 
-// Client-side routing
+// The "catchall" handler for any request that doesn't match the above
+// Send back React's index.html file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
+  if (process.env.NODE_ENV === 'production') {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  } else {
+    res.redirect('http://localhost:5173');
+  }
 });
 
 // Error handling
 app.use(errorHandler);
 
-// Database connection and server start
+// Start server
 async function startServer() {
   try {
     // Test database connection
@@ -52,9 +64,12 @@ async function startServer() {
     console.log('Database connected successfully');
     client.release();
 
-    // Start server
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`Server is running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Frontend dev server should be running on http://localhost:5173');
+      }
     });
   } catch (error) {
     console.error('Error starting server:', error);

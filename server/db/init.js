@@ -1,30 +1,31 @@
 // server/db/init.js
 import { pool } from './pool.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const initializeDatabase = async () => {
   try {
-    // Create users table
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+    // Read and execute schema.sql
+    const schemaSQL = fs.readFileSync(
+      path.join(__dirname, 'schema.sql'),
+      'utf8'
+    );
 
-    // Create sessions table
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS sessions (
-        id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
-        token VARCHAR(500) NOT NULL,
-        expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
+    // Split the schema into individual statements
+    const statements = schemaSQL
+      .split(';')
+      .filter(statement => statement.trim());
+
+    // Execute each statement
+    for (const statement of statements) {
+      if (statement.trim()) {
+        await pool.query(statement);
+      }
+    }
 
     console.log('Database initialized successfully');
   } catch (error) {
