@@ -1,64 +1,74 @@
 // src/components/cursor/CustomCursor.jsx
-import { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import './CustomCursor.css';
 
 export function CustomCursor() {
-  const cursorRef = useRef(null);
-  const followerRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [cursorType, setCursorType] = useState('default');
+
+  const handleMouseMove = useCallback((e) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+  }, []);
+
+  const handleMouseEnterInteractive = useCallback(() => {
+    setIsHovering(true);
+    setCursorType('interactive');
+  }, []);
+
+  const handleMouseLeaveInteractive = useCallback(() => {
+    setIsHovering(false);
+    setCursorType('default');
+  }, []);
 
   useEffect(() => {
-    const cursor = cursorRef.current;
-    const follower = followerRef.current;
-    
-    const moveCursor = (e) => {
-      const { clientX, clientY } = e;
-      cursor.style.transform = `translate(${clientX - 10}px, ${clientY - 10}px)`;
-      follower.style.transform = `translate(${clientX - 20}px, ${clientY - 20}px)`;
-    };
+    window.addEventListener('mousemove', handleMouseMove);
 
-    const addHoverEffect = (e) => {
-      cursor.classList.add('hover-effect');
-      if (e.target.classList.contains('magnetic-button')) {
-        handleMagneticEffect(e);
-      }
-    };
+    // Add event listeners for interactive elements
+    const interactiveElements = document.querySelectorAll([
+      'button', 
+      'a', 
+      '.nav-button', 
+      '.testimonial-card', 
+      '.indicator', 
+      '.testimonial-image'
+    ].join(', '));
 
-    const removeHoverEffect = () => {
-      cursor.classList.remove('hover-effect');
-    };
-
-    const handleMagneticEffect = (e) => {
-      const magnetic = e.target;
-      const bounding = magnetic.getBoundingClientRect();
-      const magnetsStrength = 40;
-      
-      const x = (e.clientX - bounding.left) / magnetic.offsetWidth - 0.5;
-      const y = (e.clientY - bounding.top) / magnetic.offsetHeight - 0.5;
-      
-      magnetic.style.transform = `translate(${x * magnetsStrength}px, ${y * magnetsStrength}px)`;
-    };
-
-    document.addEventListener('mousemove', moveCursor);
-    
-    // Add hover effect to interactive elements
-    const interactiveElements = document.querySelectorAll('button, a, .interactive-card');
     interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', addHoverEffect);
-      el.addEventListener('mouseleave', removeHoverEffect);
+      el.addEventListener('mouseenter', handleMouseEnterInteractive);
+      el.addEventListener('mouseleave', handleMouseLeaveInteractive);
     });
 
     return () => {
-      document.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mousemove', handleMouseMove);
+      
       interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', addHoverEffect);
-        el.removeEventListener('mouseleave', removeHoverEffect);
+        el.removeEventListener('mouseenter', handleMouseEnterInteractive);
+        el.removeEventListener('mouseleave', handleMouseLeaveInteractive);
       });
     };
-  }, []);
+  }, [handleMouseMove, handleMouseEnterInteractive, handleMouseLeaveInteractive]);
 
   return (
     <>
-      <div ref={cursorRef} className="custom-cursor" />
-      <div ref={followerRef} className="custom-cursor-follower" />
+      <div 
+        className={`custom-cursor ${cursorType} ${isHovering ? 'hovering' : ''}`}
+        style={{ 
+          transform: `translate(${position.x}px, ${position.y}px)`,
+          '--cursor-x': `${position.x}px`,
+          '--cursor-y': `${position.y}px`
+        }}
+      >
+        <div className="cursor-dot"></div>
+        <div className="cursor-outline"></div>
+      </div>
+      <div 
+        className="cursor-trail"
+        style={{ 
+          '--trail-x': `${position.x}px`,
+          '--trail-y': `${position.y}px`
+        }}
+      />
     </>
   );
 }

@@ -1,12 +1,15 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Landing from './components/landing/Landing';
-import LoginPage from './components/auth/Login/Login';
-import RegisterPage from './components/auth/Register/Register';
-import Dashboard from './components/dashboard/Dashboard';
-import PreLoginPage from './components/PreLogin/PreLogin';
-import ConsentBanner from './components/ConsentBanner/ConsentBanner';
+
+// Import pages and components
+import { Landing } from './components/landing/Landing';
+import { LoginPage } from './components/auth/Login/Login';
+import { RegisterPage } from './components/auth/Register/Register';
+import { PreLoginPage } from './components/PreLogin/PreLogin';
+import { Dashboard } from './components/Dashboard/Dashboard';
+import { ConsentBanner } from './components/ConsentBanner/ConsentBanner';
+import { CustomCursor } from './components/cursor/CustomCursor';
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -20,6 +23,9 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      {/* Render Custom Cursor */}
+      <CustomCursor />
+
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Landing />} />
@@ -61,6 +67,7 @@ function App() {
         {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
       <ConsentBanner />
     </Router>
   );

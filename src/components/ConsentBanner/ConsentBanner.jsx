@@ -158,4 +158,4 @@ const ConsentBanner = () => {
   );
 };
 
-export default ConsentBanner;
+export { ConsentBanner };

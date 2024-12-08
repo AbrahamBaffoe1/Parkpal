@@ -63,4 +63,4 @@ function PreLoginPage() {
   );
 }
 
-export default PreLoginPage;
+export { PreLoginPage };

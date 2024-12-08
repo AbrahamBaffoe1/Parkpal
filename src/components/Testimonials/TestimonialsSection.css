@@ -5,6 +5,8 @@
   --background-dark: #0A0A0A;
   --card-bg: rgba(255, 255, 255, 0.03);
   --card-border: rgba(255, 255, 255, 0.1);
+  --gradient-primary: linear-gradient(45deg, rgba(147, 51, 234, 0.3), rgba(79, 70, 229, 0.3));
+  --gradient-secondary: linear-gradient(135deg, rgba(236, 72, 153, 0.3), rgba(239, 68, 68, 0.3));
 }
 
 .testimonials-section {
@@ -21,8 +23,41 @@
 .testimonials-background {
   position: absolute;
   inset: 0;
-  z-index: 0;
   overflow: hidden;
+  background: var(--background-dark);
+}
+
+.testimonials-background::before,
+.testimonials-background::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    radial-gradient(circle at 30% 80%, rgba(147, 51, 234, 0.1), transparent 40%),
+    radial-gradient(circle at 70% 20%, rgba(79, 70, 229, 0.1), transparent 40%);
+  animation: backgroundFlow 20s ease infinite;
+  opacity: 0.6;
+}
+
+.testimonials-background::after {
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1), transparent 40%);
+  animation: backgroundFlow 25s ease-in-out infinite alternate;
+  opacity: 0.4;
+}
+
+.background-patterns {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 40px),
+    repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(255, 255, 255, 0.02) 20px, rgba(255, 255, 255, 0.02) 40px);
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  pointer-events: none;
 }
 
 .background-gradient {
@@ -34,21 +69,6 @@
   filter: blur(80px);
   opacity: 0.8;
   animation: pulseBackground 10s ease-in-out infinite;
-}
-
-.background-patterns {
-  position: absolute;
-  inset: 0;
-  opacity: 0.15;
-  background-image: repeating-linear-gradient(
-    45deg,
-    var(--testimonial-primary) 0,
-    var(--testimonial-primary) 1px,
-    transparent 0,
-    transparent 50%
-  );
-  background-size: 30px 30px;
-  animation: patternMove 20s linear infinite;
 }
 
 .testimonials-container {
@@ -400,6 +420,18 @@
 @keyframes pulseRing {
   0% { transform: scale(0.8); opacity: 0.5; }
   100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes backgroundFlow {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
 }
 
 /* Responsive Design */

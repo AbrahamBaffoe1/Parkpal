@@ -1,0 +1,141 @@
+:root {
+  --cursor-primary: #9333EA;
+  --cursor-secondary: #6366F1;
+  --cursor-background: rgba(147, 51, 234, 0.2);
+}
+
+/* Disable default cursor */
+body {
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* Custom Cursor Base Styles */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: 
+    transform 0.1s ease-out, 
+    width 0.2s ease, 
+    height 0.2s ease;
+}
+
+/* Cursor Dot */
+.cursor-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cursor-primary);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  transition: 
+    width 0.2s ease, 
+    height 0.2s ease, 
+    background 0.3s ease;
+}
+
+/* Cursor Outline */
+.cursor-outline {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--cursor-primary);
+  transform: translate(-50%, -50%);
+  opacity: 0.5;
+  transition: 
+    width 0.2s ease, 
+    height 0.2s ease, 
+    opacity 0.3s ease, 
+    border-color 0.3s ease;
+}
+
+/* Cursor States */
+.custom-cursor.default .cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--cursor-primary);
+}
+
+.custom-cursor.default .cursor-outline {
+  width: 40px;
+  height: 40px;
+  border-color: var(--cursor-primary);
+  opacity: 0.5;
+}
+
+.custom-cursor.interactive .cursor-dot {
+  width: 16px;
+  height: 16px;
+  background: var(--cursor-secondary);
+}
+
+.custom-cursor.interactive .cursor-outline {
+  width: 80px;
+  height: 80px;
+  border-color: var(--cursor-secondary);
+  opacity: 0.3;
+}
+
+.custom-cursor.hovering .cursor-dot {
+  width: 24px;
+  height: 24px;
+  background: var(--cursor-secondary);
+}
+
+.custom-cursor.hovering .cursor-outline {
+  width: 100px;
+  height: 100px;
+  border-color: var(--cursor-secondary);
+  opacity: 0.2;
+}
+
+/* Cursor Trail */
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: radial-gradient(
+    circle at center, 
+    var(--cursor-background), 
+    transparent 70%
+  );
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  transform: translate(
+    calc(var(--trail-x, 0px) - 100px), 
+    calc(var(--trail-y, 0px) - 100px)
+  );
+  opacity: 0.3;
+  filter: blur(60px);
+  transition: transform 0.5s ease-out;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  body {
+    cursor: default;
+  }
+
+  .custom-cursor,
+  .cursor-trail {
+    display: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .custom-cursor,
+  .cursor-trail {
+    transition: none;
+  }
+}

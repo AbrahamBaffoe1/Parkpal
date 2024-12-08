@@ -12,6 +12,7 @@ import { Navigation } from '../Navigation/Navigation';
 import { Cta } from '../sections/Cta';
 import { HeroSection } from '../HeroSection/HeroSection';
 import { Footer } from '../Footer/Footer';
+import { ConsentBanner } from '../ConsentBanner/ConsentBanner';
 import './Landing.css';
 import '../../styles/colorScheme.css';
 
@@ -82,9 +83,10 @@ function Landing() {
         <TestimonialsSection />
         <FAQSection />
         <Footer />
+        <ConsentBanner />
       </div>
     </div>
   );
 }
 
-export default Landing;
+export { Landing };
