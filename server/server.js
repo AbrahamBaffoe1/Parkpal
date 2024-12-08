@@ -1,80 +1,141 @@
 // server/server.js
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import compression from 'compression';
+import { rateLimit } from 'express-rate-limit';
+import session from 'express-session';
+import morgan from 'morgan';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import dotenv from 'dotenv';
+
+// Import routes
 import { authRoutes } from './routes/auth.js';
 import { protectedRoutes } from './routes/protected.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import { pool } from './db/pool.js';
+import { userRoutes } from './routes/user.js';
+
+// Import middleware and utilities
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { auth } from './middleware/auth.js';
+import { logger } from './services/logger.js';
+import { initializeDatabase } from './db/pool.js';
+import config from './config/server.config.js';
+
+// Load environment variables
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config();
 
+// Initialize express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(helmet({
-  contentSecurityPolicy: false // This allows loading of scripts
-}));
+// Security middleware
+app.use(helmet(config.securityConfig));
+app.use(compression(config.compressionConfig));
 
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
-    : 'http://localhost:5173',
-  credentials: true
-}));
+// CORS configuration
+app.use(cors(config.corsConfig));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+// Rate limiting
+app.use('/api/', rateLimit(config.rateLimitConfig));
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api', protectedRoutes);
+// Session configuration
+app.use(session(config.sessionConfig));
 
-// Serve static files from the React app
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../dist')));
-}
+// Request logging
+app.use(morgan(config.morganConfig));
 
-// The "catchall" handler for any request that doesn't match the above
-// Send back React's index.html file
-app.get('*', (req, res) => {
-  if (process.env.NODE_ENV === 'production') {
-    res.sendFile(path.join(__dirname, '../dist/index.html'));
-  } else {
-    res.redirect('http://localhost:5173');
-  }
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Static files configuration
+const rootDir = path.join(__dirname, '..');
+
+// Configure proper MIME types
+express.static.mime.define({
+  'application/javascript': ['js', 'mjs', 'jsx'],
+  'text/javascript': ['js', 'mjs', 'jsx']
 });
 
+// API routes first
+app.use('/api/auth', authRoutes);
+app.use('/api/protected', auth, protectedRoutes);
+app.use('/api/user', auth, userRoutes);
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Serve static files and handle client-side routing
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files from the React build directory
+  app.use(express.static(path.join(rootDir, 'dist'), {
+    setHeaders: (res, path) => {
+      if (path.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript');
+      } else if (path.endsWith('.jsx')) {
+        res.setHeader('Content-Type', 'application/javascript');
+      }
+    }
+  }));
+  
+  // Handle React routing by serving index.html for all non-API routes
+  app.get('/*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(rootDir, 'dist', 'index.html'));
+    }
+  });
+} else {
+  // In development, proxy requests to Vite dev server
+  app.use((req, res, next) => {
+    if (!req.path.startsWith('/api')) {
+      // Forward to Vite dev server (typically running on port 5173)
+      res.redirect(`http://localhost:5173${req.path}`);
+    } else {
+      next();
+    }
+  });
+}
+
 // Error handling
+app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server
-async function startServer() {
+// Graceful shutdown
+const gracefulShutdown = async (signal) => {
+  console.log(`\nReceived ${signal}. Starting graceful shutdown...`);
+  
+  // Close database connections and perform cleanup
   try {
-    // Test database connection
-    const client = await pool.connect();
-    console.log('Database connected successfully');
-    client.release();
-
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      if (process.env.NODE_ENV !== 'production') {
-        console.log('Frontend dev server should be running on http://localhost:5173');
-      }
-    });
+    await pool.end();
+    console.log('Database connections closed.');
+    process.exit(0);
   } catch (error) {
-    console.error('Error starting server:', error);
+    console.error('Error during shutdown:', error);
     process.exit(1);
   }
-}
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Initialize database and start server
+const startServer = async () => {
+  try {
+    await initializeDatabase();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
 
 startServer();

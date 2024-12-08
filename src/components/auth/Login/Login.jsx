@@ -96,7 +96,7 @@ function LoginPage() {
     <div className="login-page-container">
       <div className="login-card">
         <div className="login-header">
-          <h2 className="login-title">Welcome back to ParkPal</h2>
+          <h2 className="login-title">Yup You're Back!</h2>
           <p className="login-subtitle">Login to your account</p>
         </div>
         

@@ -1,3 +1,4 @@
+// src/components/auth/Register/Register.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, AtSign, Lock, User } from 'lucide-react';
@@ -7,43 +8,50 @@ import './Register.css';
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
   const [error, setError] = useState('');
-  const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  if (isSuccess) {
-    return <SuccessScreen message="Registration successful!" redirectTo="/dashboard" delay={3000} />;
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    setError(''); // Clear error when user types
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError('');
+    if (!formData.name || !formData.email || !formData.password) {
+      setError('All fields are required');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+    
     setIsLoading(true);
+    setError('');
     
     try {
-      const response = await api.post('/api/auth/register', { 
-        name, 
-        email, 
-        password 
-      });
+      const response = await api.post('/auth/register', formData);
       
       if (response.data?.status === 'success') {
-        // Store the token
         localStorage.setItem('token', response.data.data.token);
-        // Store user data
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
-        
         setIsSuccess(true);
         
-        // Navigate to dashboard after delay
         setTimeout(() => {
           navigate('/dashboard');
-        }, 3000);
-      } else {
-        setError('Invalid response from server');
+        }, 2000);
       }
     } catch (err) {
       console.error(err);
@@ -53,15 +61,29 @@ function RegisterPage() {
     }
   };
 
+  if (isSuccess) {
+    return <SuccessScreen 
+      message="Registration successful!" 
+      redirectTo="/dashboard" 
+      delay={2000} 
+    />;
+  }
+
   return (
-    <div className="register-page-container">
+    <div className="register-container">
       <div className="register-card">
         <div className="register-header">
           <h2 className="register-title">Welcome to ParkPal</h2>
           <p className="register-subtitle">Sign up to start your journey</p>
         </div>
-        <div className="register-content">
-          {error && <div className="error-message">{error}</div>}
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        <form className="register-form" onSubmit={handleRegister}>
           <div className="form-group">
             <label htmlFor="name" className="form-label">
               Name
@@ -70,14 +92,17 @@ function RegisterPage() {
               <User className="input-icon" />
               <input
                 id="name"
+                name="name"
                 type="text"
                 placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={formData.name}
+                onChange={handleChange}
                 className="form-input"
+                disabled={isLoading}
               />
             </div>
           </div>
+
           <div className="form-group">
             <label htmlFor="email" className="form-label">
               Email
@@ -86,14 +111,17 @@ function RegisterPage() {
               <AtSign className="input-icon" />
               <input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 className="form-input"
+                disabled={isLoading}
               />
             </div>
           </div>
+
           <div className="form-group">
             <label htmlFor="password" className="form-label">
               Password
@@ -102,35 +130,37 @@ function RegisterPage() {
               <Lock className="input-icon" />
               <input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 className="form-input"
+                disabled={isLoading}
               />
             </div>
           </div>
-        </div>
-        <div className="register-footer">
-          <button className="register-button" onClick={handleRegister}>
-            <span>Sign Up</span>
-            <ArrowRight className="button-icon" />
+
+          <button 
+            type="submit" 
+            className={`register-button ${isLoading ? 'loading' : ''}`}
+            disabled={isLoading}
+          >
+            <span>{isLoading ? 'Registering...' : 'Sign Up'}</span>
+            {!isLoading && <ArrowRight className="button-icon" />}
           </button>
-          <p className="register-subtext">
+
+          <p className="terms-text">
             By signing up, you agree to ParkPal's{' '}
-            <a href="/terms" className="register-link">
-              Terms of Service
-            </a>{' '}
+            <Link to="/terms" className="link">Terms of Service</Link>{' '}
             and{' '}
-            <a href="/privacy" className="register-link">
-              Privacy Policy
-            </a>
-            .
+            <Link to="/privacy" className="link">Privacy Policy</Link>
           </p>
+
           <Link to="/login" className="login-link">
             Already have an account? Login
           </Link>
-        </div>
+        </form>
       </div>
     </div>
   );
