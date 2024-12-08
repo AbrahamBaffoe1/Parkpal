@@ -1,7 +1,8 @@
+// LoadingSpinner.jsx
 import React from 'react';
 import './LoadingSpinner.css';
 
-const LoadingSpinner = ({ size = 'default', color = 'primary' }) => {
+export const LoadingSpinner = ({ size = 'default', color = 'primary', fullScreen = false }) => {
   const sizeClasses = {
     small: 'spinner-small',
     default: 'spinner-default',
@@ -18,7 +19,7 @@ const LoadingSpinner = ({ size = 'default', color = 'primary' }) => {
   };
 
   return (
-    <div className="loading-spinner-wrapper">
+    <div className={`loading-spinner-wrapper ${fullScreen ? 'full-screen' : ''}`}>
       <div className={`spinner ${sizeClasses[size]} ${colorClasses[color]}`}>
         <div className="spinner-inner"></div>
       </div>
@@ -26,4 +27,5 @@ const LoadingSpinner = ({ size = 'default', color = 'primary' }) => {
   );
 };
 
+// Add a default export as well for flexibility
 export default LoadingSpinner;
