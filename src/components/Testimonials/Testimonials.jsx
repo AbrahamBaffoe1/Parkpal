@@ -1,243 +1,194 @@
 // src/components/sections/TestimonialsSection.jsx
-import { useState, useEffect, useRef } from 'react';
-import { Star, ChevronLeft, ChevronRight, Quote, ArrowLeft, ArrowRight, Loader } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import './TestimonialsSection.css';
 
 export function TestimonialsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [imagesLoaded, setImagesLoaded] = useState({});
-  const [swipeDirection, setSwipeDirection] = useState(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [dragStart, setDragStart] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
-  const [progress, setProgress] = useState(0);
-  
-  const carouselRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const slideRef = useRef(null);
+  const autoplayRef = useRef(null);
   const progressRef = useRef(null);
-  const autoPlayRef = useRef(null);
+  const [progress, setProgress] = useState(0);
 
   const testimonials = [
     {
+      id: 1,
       name: "Sarah Johnson",
       role: "Daily Commuter",
       content: "ParkPal has transformed my daily commute. Finding parking is now effortless! The real-time availability feature saves me so much time every morning.",
       rating: 5,
       location: "Lagos, Nigeria",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
     },
     {
+      id: 2,
       name: "Michael Chen",
       role: "Business Owner",
       content: "As a business owner, managing employee parking was a hassle until we found ParkPal. The business features are exactly what we needed for our growing team.",
       rating: 5,
       location: "Abuja, Nigeria",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d"
     },
     {
+      id: 3,
       name: "Emma Wilson",
       role: "City Explorer",
       content: "Love the real-time updates and user-friendly interface. ParkPal makes exploring new areas of the city stress-free. It's truly a game-changer!",
       rating: 4,
       location: "Port Harcourt, Nigeria",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
-    },
-    {
-      name: "David Okonjo",
-      role: "Ride Share Driver",
-      content: "This app is a lifesaver for ride-share drivers! Quick parking between rides and the rates are very reasonable.",
-      rating: 5,
-      location: "Ibadan, Nigeria",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80"
     }
   ];
 
-  // Enhanced navigation with progress reset
-  const nextTestimonial = () => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length);
-    resetProgress();
+  const startAutoplay = useCallback(() => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
+    autoplayRef.current = setInterval(() => {
+      handleNext();
+    }, 5000);
+  }, []);
+
+  const stopAutoplay = () => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
   };
 
-  const prevTestimonial = () => {
-    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    resetProgress();
-  };
-
-  // Progress bar handling
-  const resetProgress = () => {
+  const resetProgress = useCallback(() => {
     setProgress(0);
     if (progressRef.current) {
       progressRef.current.style.width = '0%';
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         progressRef.current.style.width = '100%';
-      }, 50);
+      });
     }
-  };
+  }, []);
 
-  // Auto-advance and progress
+  useEffect(() => {
+    startAutoplay();
+    return () => stopAutoplay();
+  }, [activeIndex, startAutoplay]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setProgress(prev => {
         if (prev >= 100) {
-          nextTestimonial();
           return 0;
         }
-        return prev + 2; // Adjust speed here
+        return prev + 0.5;
       });
-    }, 100);
+    }, 25);
 
     return () => clearInterval(timer);
   }, [activeIndex]);
 
-  // Image loading handler
-  const handleImageLoad = (index) => {
-    setImagesLoaded(prev => ({
-      ...prev,
-      [index]: true
-    }));
-    if (Object.keys(imagesLoaded).length === testimonials.length - 1) {
-      setIsLoading(false);
-    }
+  const handleNext = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+    resetProgress();
+    setTimeout(() => setIsAnimating(false), 600);
   };
 
-  // Enhanced touch handling with resistance
-  const handleTouchStart = (e) => {
+  const handlePrev = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    resetProgress();
+    setTimeout(() => setIsAnimating(false), 600);
+  };
+
+  const handleDragStart = (e) => {
     setIsDragging(true);
-    const touch = e.touches[0];
-    setDragOffset(0);
-    setSwipeDirection(null);
+    setDragStart(e.type === 'touchstart' ? e.touches[0].clientX : e.clientX);
+    stopAutoplay();
   };
 
-  const handleTouchMove = (e) => {
+  const handleDragMove = (e) => {
     if (!isDragging) return;
-
-    const touch = e.touches[0];
-    const currentOffset = touch.clientX - e.target.getBoundingClientRect().left;
-    const delta = currentOffset - dragOffset;
-
-    // Add resistance at edges
-    if ((activeIndex === 0 && delta > 0) || 
-        (activeIndex === testimonials.length - 1 && delta < 0)) {
-      setDragOffset(delta * 0.3);
-    } else {
-      setDragOffset(delta);
-    }
-
-    // Show swipe direction indicator
-    if (Math.abs(delta) > 50) {
-      setSwipeDirection(delta > 0 ? 'right' : 'left');
-    }
+    const currentPosition = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const diff = currentPosition - dragStart;
+    setDragOffset(diff);
   };
 
-  const handleTouchEnd = () => {
+  const handleDragEnd = () => {
     if (!isDragging) return;
-
-    const threshold = 100; // Minimum distance for swipe
+    setIsDragging(false);
+    const threshold = window.innerWidth * 0.2;
+    
     if (Math.abs(dragOffset) > threshold) {
       if (dragOffset > 0) {
-        prevTestimonial();
+        handlePrev();
       } else {
-        nextTestimonial();
+        handleNext();
       }
     }
-
-    setIsDragging(false);
     setDragOffset(0);
-    setSwipeDirection(null);
+    startAutoplay();
   };
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowLeft') prevTestimonial();
-      if (e.key === 'ArrowRight') nextTestimonial();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   return (
     <section className="testimonials-section">
-      <div className="testimonials-background"></div>
-      <div className="container">
-        <h2 className="section-title">What Our Users Say</h2>
-        
-        <div className="testimonials-wrapper">
-          <button 
-            className={`nav-button prev ${activeIndex === 0 ? 'disabled' : ''}`}
-            onClick={prevTestimonial}
-            disabled={activeIndex === 0}
-            aria-label="Previous testimonial"
-          >
-            <ChevronLeft size={24} />
-          </button>
+      <div className="testimonials-background">
+        <div className="background-gradient"></div>
+        <div className="background-patterns"></div>
+      </div>
+
+      <div className="testimonials-container">
+        <h2 className="section-title">
+          What Our Users Say
+          <div className="title-decoration"></div>
+        </h2>
+
+        <div className="testimonials-wrapper"
+             onMouseDown={handleDragStart}
+             onMouseMove={handleDragMove}
+             onMouseUp={handleDragEnd}
+             onMouseLeave={handleDragEnd}
+             onTouchStart={handleDragStart}
+             onTouchMove={handleDragMove}
+             onTouchEnd={handleDragEnd}>
           
-          <button 
-            className={`nav-button next ${activeIndex === testimonials.length - 1 ? 'disabled' : ''}`}
-            onClick={nextTestimonial}
-            disabled={activeIndex === testimonials.length - 1}
-            aria-label="Next testimonial"
-          >
-            <ChevronRight size={24} />
-          </button>
-
-          {/* Swipe Direction Indicators */}
-          {swipeDirection && (
-            <div className={`swipe-indicator ${swipeDirection}`}>
-              {swipeDirection === 'left' ? <ArrowLeft /> : <ArrowRight />}
-            </div>
-          )}
-
-          <div 
-            className={`testimonials-carousel ${isDragging ? 'dragging' : ''}`}
-            ref={carouselRef}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-          >
+          <div className="testimonials-track" ref={slideRef}
+               style={{
+                 transform: `translateX(${-activeIndex * 100 + (dragOffset / window.innerWidth) * 100}%)`
+               }}>
             {testimonials.map((testimonial, index) => (
               <div 
-                key={index}
+                key={testimonial.id} 
                 className={`testimonial-slide ${index === activeIndex ? 'active' : ''}`}
-                style={{
-                  transform: `translateX(${(index - activeIndex) * 100 + (index === activeIndex ? dragOffset : 0)}%)`,
-                  opacity: index === activeIndex ? 1 : 0,
-                  visibility: index === activeIndex ? 'visible' : 'hidden'
-                }}
               >
-                <div className="testimonial-content">
-                  <Quote className="quote-icon" size={40} />
-                  <blockquote>{testimonial.content}</blockquote>
-                  
-                  <div className="rating">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i}
-                        className={`star ${i < testimonial.rating ? 'filled' : ''}`}
-                        size={24}
-                      />
-                    ))}
+                <div className="testimonial-card">
+                  <div className="testimonial-image-container">
+                    <img 
+                      src={testimonial.image} 
+                      alt={testimonial.name}
+                      className="testimonial-image"
+                    />
+                    <div className="image-decoration"></div>
                   </div>
-                  
-                  <div className="testimonial-author">
-                    <div className="author-image">
-                      {!imagesLoaded[index] && (
-                        <div className="image-loader">
-                          <Loader className="animate-spin" size={24} />
-                        </div>
-                      )}
-                      <img 
-                        src={testimonial.image} 
-                        alt={testimonial.name}
-                        loading="lazy"
-                        onLoad={() => handleImageLoad(index)}
-                        className={imagesLoaded[index] ? 'loaded' : ''}
-                      />
-                    </div>
-                    <div className="author-info">
-                      <h4>{testimonial.name}</h4>
-                      <p className="role">{testimonial.role}</p>
-                      <p className="location">{testimonial.location}</p>
+
+                  <div className="testimonial-content">
+                    <Quote className="quote-icon" size={40} />
+                    <p className="testimonial-text">{testimonial.content}</p>
+                    
+                    <div className="testimonial-author">
+                      <div className="author-info">
+                        <h3 className="author-name">{testimonial.name}</h3>
+                        <p className="author-role">{testimonial.role}</p>
+                        <p className="author-location">{testimonial.location}</p>
+                      </div>
+                      
+                      <div className="rating-container">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star 
+                            key={i}
+                            className={`star ${i < testimonial.rating ? 'filled' : ''}`}
+                            size={20}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -245,24 +196,41 @@ export function TestimonialsSection() {
             ))}
           </div>
 
-          {/* Progress Bar */}
-          <div className="progress-container">
-            <div 
-              className="progress-bar" 
-              ref={progressRef}
-              style={{ width: `${progress}%` }}
-            />
+          <button 
+            className="nav-button prev" 
+            onClick={handlePrev}
+            disabled={isAnimating || activeIndex === 0}
+          >
+            <ChevronLeft />
+            <div className="button-glow"></div>
+          </button>
+
+          <button 
+            className="nav-button next" 
+            onClick={handleNext}
+            disabled={isAnimating || activeIndex === testimonials.length - 1}
+          >
+            <ChevronRight />
+            <div className="button-glow"></div>
+          </button>
+
+          <div className="progress-bar">
+            <div className="progress-fill" ref={progressRef}></div>
           </div>
 
-          {/* Enhanced Indicators */}
           <div className="testimonial-indicators">
             {testimonials.map((_, index) => (
               <button
                 key={index}
                 className={`indicator ${index === activeIndex ? 'active' : ''}`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
+                onClick={() => {
+                  setActiveIndex(index);
+                  resetProgress();
+                }}
+              >
+                <span className="indicator-fill"></span>
+                <span className="indicator-pulse"></span>
+              </button>
             ))}
           </div>
         </div>
