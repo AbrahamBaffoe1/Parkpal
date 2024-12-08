@@ -1,67 +1,108 @@
 // server/routes/auth.js
 import express from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { pool } from '../db/pool.js';
-import { ValidationError, UnauthorizedError } from '../middleware/errorHandler.js';
+import { ValidationError } from '../middleware/errorHandler.js';
+import { asyncHandler } from '../middleware/asyncHandler.js';
 import { logger } from '../services/logger.js';
 
 const router = express.Router();
 
 // Register route
-router.post('/register', async (req, res, next) => {
+router.post('/register', asyncHandler(async (req, res) => {
+  const { name, email, password } = req.body;
+
+  // Validate input
+  if (!name || !email || !password) {
+    throw new ValidationError('Name, email and password are required');
+  }
+
+  if (password.length < 8) {
+    throw new ValidationError('Password must be at least 8 characters long');
+  }
+
+  // Check if user exists
+  const existingUser = await pool.query(
+    'SELECT id FROM users WHERE email = $1',
+    [email.toLowerCase()]
+  );
+
+  if (existingUser.rows.length > 0) {
+    throw new ValidationError('Email already registered');
+  }
+
+  // Hash password
+  const salt = await bcrypt.genSalt(12);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Start transaction
+  const client = await pool.connect();
   try {
-    const { email, password, full_name } = req.body;
-
-    // Validate input
-    if (!email || !password || !full_name) {
-      throw new ValidationError('Email, password and full name are required');
-    }
-
-    if (password.length < 8) {
-      throw new ValidationError('Password must be at least 8 characters long');
-    }
-
-    // Check if email already exists
-    const existingUser = await pool.query(
-      'SELECT id FROM users WHERE email = $1',
-      [email]
-    );
-
-    if (existingUser.rows.length > 0) {
-      throw new ValidationError('Email already registered');
-    }
-
-    // Hash password
-    const salt = await bcrypt.genSalt(12);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    await client.query('BEGIN');
 
     // Create user
-    const result = await pool.query(
-      `INSERT INTO users (email, password_hash, full_name)
+    const userResult = await client.query(
+      `INSERT INTO users (full_name, email, password_hash)
        VALUES ($1, $2, $3)
-       RETURNING id, email, full_name`,
-      [email, hashedPassword, full_name]
+       RETURNING id, full_name, email`,
+      [name, email.toLowerCase(), hashedPassword]
     );
 
-    const user = result.rows[0];
+    const user = userResult.rows[0];
 
-    // Create session
+    // Get default role
+    const roleResult = await client.query(
+      'SELECT id FROM roles WHERE name = $1',
+      ['user']
+    );
+
+    if (roleResult.rows.length === 0) {
+      throw new Error('Default user role not found');
+    }
+
+    // Assign role
+    await client.query(
+      'INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2)',
+      [user.id, roleResult.rows[0].id]
+    );
+
+    await client.query('COMMIT');
+
+    // Generate token
+    const token = jwt.sign(
+      { userId: user.id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    // Set session
     req.session.userId = user.id;
+    await new Promise((resolve, reject) => {
+      req.session.save(err => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
 
     res.status(201).json({
       status: 'success',
       data: {
+        token,
         user: {
           id: user.id,
           email: user.email,
-          full_name: user.full_name
+          name: user.full_name
         }
       }
     });
   } catch (error) {
-    next(error);
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
   }
-});
+}));
 
 // Login route
 router.post('/login', async (req, res, next) => {
@@ -82,13 +123,13 @@ router.post('/login', async (req, res, next) => {
     const user = result.rows[0];
 
     if (!user) {
-      throw new UnauthorizedError('Invalid credentials');
+      throw new ValidationError('Invalid credentials');
     }
 
     // Verify password
     const validPassword = await bcrypt.compare(password, user.password_hash);
     if (!validPassword) {
-      throw new UnauthorizedError('Invalid credentials');
+      throw new ValidationError('Invalid credentials');
     }
 
     // Update last login
@@ -106,7 +147,7 @@ router.post('/login', async (req, res, next) => {
         user: {
           id: user.id,
           email: user.email,
-          full_name: user.full_name
+          name: user.full_name
         }
       }
     });
@@ -148,7 +189,7 @@ router.get('/check', async (req, res, next) => {
     }
 
     const result = await pool.query(
-      'SELECT id, email, full_name FROM users WHERE id = $1',
+      'SELECT id, email, full_name as name FROM users WHERE id = $1',
       [req.session.userId]
     );
 

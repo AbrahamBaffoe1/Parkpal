@@ -26,71 +26,28 @@ export const notFoundHandler = (req, res) => {
   });
 };
 
-// Main error handler middleware
-export const errorHandler = (err, req, res, next) => {
-  console.error('Error:', {
-    message: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-    name: err.name
-  });
-
-  // Handle specific error types
-  switch (err.name) {
-    case 'ValidationError':
-      return res.status(400).json({
-        status: 'error',
-        message: 'Validation Error',
-        errors: err.errors
-      });
-
-    case 'UnauthorizedError':
-      return res.status(401).json({
-        status: 'error',
-        message: err.message || 'Unauthorized'
-      });
-
-    case 'SessionExpiredError':
-      return res.status(401).json({
-        status: 'error',
-        message: err.message || 'Session has expired'
-      });
-
-    case 'DatabaseError':
-      if (err.code === '23505') { // Unique violation
-        return res.status(409).json({
-          status: 'error',
-          message: 'Resource already exists'
-        });
-      }
-      break;
-
-    default:
-      // Default error response
-      return res.status(err.status || 500).json({
-        status: 'error',
-        message: process.env.NODE_ENV === 'production' 
-          ? 'Internal Server Error'
-          : err.message,
-        ...(process.env.NODE_ENV === 'development' && {
-          stack: err.stack
-        })
-      });
-  }
-};
-
 // Custom error classes
 export class ValidationError extends Error {
-  constructor(errors) {
-    super('Validation Error');
+  constructor(message) {
+    super(message);
     this.name = 'ValidationError';
-    this.errors = errors;
+    this.status = 400;
   }
 }
 
 export class UnauthorizedError extends Error {
-  constructor(message = 'Unauthorized') {
+  constructor(message) {
     super(message);
     this.name = 'UnauthorizedError';
+    this.status = 401;
+  }
+}
+
+export class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'NotFoundError';
+    this.status = 404;
   }
 }
 
@@ -107,6 +64,53 @@ export class SessionExpiredError extends Error {
     this.name = 'SessionExpiredError';
   }
 }
+
+import { logger } from '../services/logger.js';
+
+export const asyncHandler = fn => (req, res, next) => {
+  return Promise
+    .resolve(fn(req, res, next))
+    .catch(next);
+};
+
+export const errorHandler = (err, req, res, next) => {
+  // If headers already sent, delegate to default Express error handler
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  // Log error
+  logger.error('Error:', {
+    message: err.message,
+    name: err.name,
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
+
+  // Handle specific error types
+  let status = 500;
+  let message = 'Internal Server Error';
+
+  if (err instanceof ValidationError) {
+    status = err.status;
+    message = err.message;
+  } else if (err.code === '23505') { // Unique violation
+    status = 409;
+    message = 'Resource already exists';
+  }
+
+  // Send response
+  res.status(status).json({
+    status: 'error',
+    message,
+    ...(process.env.NODE_ENV === 'development' && {
+      details: {
+        name: err.name,
+        code: err.code,
+        stack: err.stack
+      }
+    })
+  });
+};
 
 // Export all middleware and error classes
 export const middleware = {

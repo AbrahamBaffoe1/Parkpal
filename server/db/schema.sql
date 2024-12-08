@@ -1,24 +1,58 @@
--- Database schema for ParkPal
-
--- Enable UUID extension (must be superuser or have proper privileges)
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA public;
+-- Drop existing tables if they exist
+DROP TABLE IF EXISTS refresh_tokens CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS bookings CASCADE;
+DROP TABLE IF EXISTS parking_spots CASCADE;
+DROP TABLE IF EXISTS user_roles CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS "session" CASCADE;
 
 -- Users table
-CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name VARCHAR(100) NOT NULL,
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    full_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     is_verified BOOLEAN DEFAULT FALSE,
+    verification_token VARCHAR(255),
+    reset_token VARCHAR(255),
+    reset_token_expires TIMESTAMP WITH TIME ZONE,
+    last_login TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Roles table
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User roles table
+CREATE TABLE user_roles (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, role_id)
+);
+
+-- Insert default roles
+INSERT INTO roles (name, description) VALUES
+    ('user', 'Regular user with basic privileges'),
+    ('admin', 'Administrator with full access')
+ON CONFLICT (name) DO NOTHING;
+
 -- Parking spots table
-CREATE TABLE IF NOT EXISTS parking_spots (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    owner_id UUID REFERENCES users(id),
+CREATE TABLE parking_spots (
+    id SERIAL PRIMARY KEY,
+    owner_id INTEGER REFERENCES users(id),
     address VARCHAR(255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     state VARCHAR(50) NOT NULL,
@@ -33,34 +67,43 @@ CREATE TABLE IF NOT EXISTS parking_spots (
 );
 
 -- Bookings table
-CREATE TABLE IF NOT EXISTS bookings (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    spot_id UUID REFERENCES parking_spots(id),
-    user_id UUID REFERENCES users(id),
+CREATE TABLE bookings (
+    id SERIAL PRIMARY KEY,
+    spot_id INTEGER REFERENCES parking_spots(id),
+    user_id INTEGER REFERENCES users(id),
     start_time TIMESTAMP WITH TIME ZONE NOT NULL,
     end_time TIMESTAMP WITH TIME ZONE NOT NULL,
     total_price DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(20) DEFAULT 'pending', -- pending, confirmed, cancelled, completed
+    status VARCHAR(20) DEFAULT 'pending',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Reviews table
-CREATE TABLE IF NOT EXISTS reviews (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    booking_id UUID REFERENCES bookings(id),
-    reviewer_id UUID REFERENCES users(id),
-    spot_id UUID REFERENCES parking_spots(id),
+CREATE TABLE reviews (
+    id SERIAL PRIMARY KEY,
+    booking_id INTEGER REFERENCES bookings(id),
+    reviewer_id INTEGER REFERENCES users(id),
+    spot_id INTEGER REFERENCES parking_spots(id),
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     comment TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Session store table
+CREATE TABLE session (
+    sid VARCHAR NOT NULL COLLATE "default" PRIMARY KEY,
+    sess JSON NOT NULL,
+    expire TIMESTAMP(6) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS IDX_session_expire ON session (expire);
+
 -- Refresh tokens table
-CREATE TABLE IF NOT EXISTS refresh_tokens (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID REFERENCES users(id),
+CREATE TABLE refresh_tokens (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id),
     token VARCHAR(255) NOT NULL,
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -82,22 +125,32 @@ END;
 $$ language 'plpgsql';
 
 -- Create triggers for all tables
-CREATE TRIGGER IF NOT EXISTS update_users_updated_at
+CREATE TRIGGER update_users_updated_at
     BEFORE UPDATE ON users
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER IF NOT EXISTS update_parking_spots_updated_at
+CREATE TRIGGER update_parking_spots_updated_at
     BEFORE UPDATE ON parking_spots
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER IF NOT EXISTS update_bookings_updated_at
+CREATE TRIGGER update_bookings_updated_at
     BEFORE UPDATE ON bookings
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER IF NOT EXISTS update_reviews_updated_at
+CREATE TRIGGER update_reviews_updated_at
     BEFORE UPDATE ON reviews
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_roles_updated_at
+    BEFORE UPDATE ON roles
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_user_roles_updated_at
+    BEFORE UPDATE ON user_roles
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();

@@ -1,8 +1,8 @@
 import session from 'express-session';
-import pgSession from 'connect-pg-simple';
+import connectPgSimple from 'connect-pg-simple';
 import { pool } from '../db/pool.js';
 
-const PgSession = pgSession(session);
+const PgStore = connectPgSimple(session);
 
 // Rate limiting configuration
 export const rateLimitConfig = {
@@ -18,21 +18,20 @@ export const rateLimitConfig = {
 
 // Session configuration
 export const sessionConfig = {
-  store: new PgSession({
-    pool: pool,
+  store: new PgStore({
+    pool,
     tableName: 'session',
-    createTableIfMissing: true,
-    pruneSessionInterval: 60 * 15 // Prune expired sessions every 15 minutes
+    createTableIfMissing: true
   }),
-  name: 'sessionId',
-  secret: process.env.SESSION_SECRET,
+  name: 'sid',
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    sameSite: 'strict'
+    sameSite: 'lax'
   }
 };
 
@@ -67,7 +66,7 @@ export const securityConfig = {
 // CORS configuration
 export const corsConfig = {
   origin: process.env.NODE_ENV === 'production' 
-    ? process.env.FRONTEND_URL 
+    ? process.env.CLIENT_URL 
     : 'http://localhost:5173',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

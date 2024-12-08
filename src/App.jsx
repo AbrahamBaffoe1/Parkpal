@@ -6,6 +6,7 @@ import LoginPage from './components/auth/Login/Login';
 import RegisterPage from './components/auth/Register/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import PreLoginPage from './components/PreLogin/PreLogin';
+import ConsentBanner from './components/ConsentBanner/ConsentBanner';
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -60,6 +61,7 @@ function App() {
         {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <ConsentBanner />
     </Router>
   );
 }
