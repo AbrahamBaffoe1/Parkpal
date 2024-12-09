@@ -3,134 +3,131 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
-import { rateLimit } from 'express-rate-limit';
-import session from 'express-session';
 import morgan from 'morgan';
+import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import dotenv from 'dotenv';
 
 // Import routes
-import { authRoutes } from './routes/auth.js';
-import { protectedRoutes } from './routes/protected.js';
-import { userRoutes } from './routes/user.js';
+import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
+import parkingRoutes from './routes/parking.routes.js';
+import bookingRoutes from './routes/booking.routes.js';
 
-// Import middleware and utilities
-import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
-import { auth } from './middleware/auth.js';
-import { logger } from './services/logger.js';
-import { initializeDatabase } from './db/pool.js';
-import config from './config/server.config.js';
+// Import middleware
+import { errorHandler } from './middleware/errorHandler.js';
 
-// Load environment variables
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Initialize express app
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Security middleware
-app.use(helmet(config.securityConfig));
-app.use(compression(config.compressionConfig));
-
-// CORS configuration
-app.use(cors(config.corsConfig));
-
-// Rate limiting
-app.use('/api/', rateLimit(config.rateLimitConfig));
-
-// Session configuration
-app.use(session(config.sessionConfig));
-
-// Request logging
-app.use(morgan(config.morganConfig));
-
-// Body parsing middleware
+// Security and utility middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disabled for development, configure properly for production
+  crossOriginEmbedderPolicy: false
+}));
+app.use(compression());
+app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Static files configuration
-const rootDir = path.join(__dirname, '..');
-
-// Configure proper MIME types
-express.static.mime.define({
-  'application/javascript': ['js', 'mjs', 'jsx'],
-  'text/javascript': ['js', 'mjs', 'jsx']
-});
-
-// API routes first
-app.use('/api/auth', authRoutes);
-app.use('/api/protected', auth, protectedRoutes);
-app.use('/api/user', auth, userRoutes);
+// CORS configuration
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CLIENT_URL 
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
-// Serve static files and handle client-side routing
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/parking', parkingRoutes);
+app.use('/api/bookings', bookingRoutes);
+
+// Serve static files from the React build directory in production
 if (process.env.NODE_ENV === 'production') {
-  // Serve static files from the React build directory
-  app.use(express.static(path.join(rootDir, 'dist'), {
-    setHeaders: (res, path) => {
-      if (path.endsWith('.js')) {
-        res.setHeader('Content-Type', 'application/javascript');
-      } else if (path.endsWith('.jsx')) {
-        res.setHeader('Content-Type', 'application/javascript');
-      }
-    }
-  }));
+  // Serve static files
+  app.use(express.static(path.join(__dirname, '../client/dist')));
   
-  // Handle React routing by serving index.html for all non-API routes
-  app.get('/*', (req, res) => {
-    if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(rootDir, 'dist', 'index.html'));
-    }
+  // Handle React routing, return all requests to React app
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
   });
 } else {
-  // In development, proxy requests to Vite dev server
-  app.use((req, res, next) => {
-    if (!req.path.startsWith('/api')) {
-      // Forward to Vite dev server (typically running on port 5173)
-      res.redirect(`http://localhost:5173${req.path}`);
-    } else {
-      next();
-    }
+  // Development welcome route
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'ParkPal API is running',
+      environment: process.env.NODE_ENV || 'development',
+      frontend: 'http://localhost:5173',
+      docs: '/api-docs',
+      health: '/health'
+    });
   });
 }
 
-// Error handling
-app.use(notFoundHandler);
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    status: 'error',
+    message: 'Route not found'
+  });
+});
+
+// Error handling middleware
 app.use(errorHandler);
 
-// Graceful shutdown
-const gracefulShutdown = async (signal) => {
-  console.log(`\nReceived ${signal}. Starting graceful shutdown...`);
+// Graceful shutdown handler
+const gracefulShutdown = (signal) => {
+  console.log(`\n${signal} received. Starting graceful shutdown`);
   
-  // Close database connections and perform cleanup
-  try {
-    await pool.end();
-    console.log('Database connections closed.');
-    process.exit(0);
-  } catch (error) {
-    console.error('Error during shutdown:', error);
-    process.exit(1);
-  }
+  // Add any cleanup code here (e.g., closing database connections)
+  
+  process.exit(0);
 };
 
+// Process handlers
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-// Initialize database and start server
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  gracefulShutdown('UNCAUGHT_EXCEPTION');
+});
+
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Rejection:', error);
+  gracefulShutdown('UNHANDLED_REJECTION');
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+
 const startServer = async () => {
   try {
-    await initializeDatabase();
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV}`);
+      console.log(`
+🚀 Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}
+📝 API Documentation: http://localhost:${PORT}/api-docs
+🔗 Frontend URL: ${process.env.NODE_ENV === 'production' 
+  ? process.env.CLIENT_URL 
+  : 'http://localhost:5173'}
+      `);
     });
   } catch (error) {
     console.error('Failed to start server:', error);
@@ -139,3 +136,5 @@ const startServer = async () => {
 };
 
 startServer();
+
+export default app;

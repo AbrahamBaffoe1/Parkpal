@@ -7,46 +7,48 @@ dotenv.config();
 
 const { Pool } = pg;
 
-// Simple pool configuration for passwordless PostgreSQL
+// Pool configuration with empty password
 const poolConfig = {
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'parkpal',
-  port: parseInt(process.env.DB_PORT, 10) || 5432
+  user: 'kwamebaffoe',
+  host: 'localhost',
+  database: 'parkpal_db',
+  password: '', // Empty string password
+  port: 5432,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000
 };
 
-// Create pool
+// Create pool instance
 const pool = new Pool(poolConfig);
 
-// Error handling
-pool.on('error', (err) => {
-  logger.error('Unexpected error on idle client', err);
-  process.exit(-1);
+// Log connection status
+pool.on('connect', () => {
+  logger.info('Connected to the database');
 });
 
-// Initialize database
-export async function initializeDatabase() {
-  const client = await pool.connect();
-  try {
-    // Create session table
-    await client.query(`
-      DROP TABLE IF EXISTS session;
-      CREATE TABLE IF NOT EXISTS session (
-        sid VARCHAR NOT NULL COLLATE "default" PRIMARY KEY,
-        sess JSON NOT NULL,
-        expire TIMESTAMP(6) NOT NULL
-      );
-      CREATE INDEX IF NOT EXISTS IDX_session_expire ON session (expire);
-    `);
+// Error handling for idle clients
+pool.on('error', (err) => {
+  logger.error('Unexpected error on idle client', err);
+});
 
-    logger.info('Database initialized successfully');
+// Database initialization function
+export async function initializeDatabase() {
+  let client;
+  try {
+    client = await pool.connect();
+    // Test connection
+    await client.query('SELECT NOW()');
+    logger.info('Database connection test successful');
+    
     return true;
   } catch (error) {
-    logger.error('Error initializing database:', error);
+    logger.error('Database initialization failed:', error);
     throw error;
   } finally {
-    client.release();
+    if (client) client.release();
   }
 }
 
+// Export the pool for use in other modules
 export { pool };
