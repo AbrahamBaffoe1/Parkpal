@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { LoadingSpinner } from './components/LoadingSpinner/LoadingSpinner';
 import { CustomCursor } from './components/cursor/CustomCursor';
 
+
 // Lazy load components
 const Landing = lazy(() => import('./components/landing/Landing').then(module => ({ default: module.Landing })));
 const LoginPage = lazy(() => import('./components/auth/Login/Login').then(module => ({ default: module.LoginPage })));

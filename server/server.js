@@ -71,13 +71,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Development welcome route
   app.get('/', (req, res) => {
-    res.json({
-      message: 'ParkPal API is running',
-      environment: process.env.NODE_ENV || 'development',
-      frontend: 'http://localhost:5173',
-      docs: '/api-docs',
-      health: '/health'
-    });
+    res.redirect('http://localhost:5173');
   });
 }
 
