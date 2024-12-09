@@ -141,51 +141,64 @@ function RegisterPage() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    
+
+    // Ensure you are consistent with field names
+    const formData = { 
+        name: e.target.name.value, 
+        email: e.target.email.value, 
+        password: e.target.password.value 
+    };
+
+    console.log("Form Data:", formData);
+
+    // Check if all fields are filled
+    if (!formData.name || !formData.email || !formData.password) {
+        setError('All fields are required');
+        return;
+    }
+
+    // Validate name length and characters
     const nameValidationError = validateName(formData.name);
     if (nameValidationError) {
-      setNameError(nameValidationError);
-      return;
+        setNameError(nameValidationError);
+        return;
     }
 
-    if (!formData.email || !formData.password) {
-      setError('All fields are required');
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return;
-    }
-
+    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      setError('Please enter a valid email address');
-      return;
+        setError('Please enter a valid email address');
+        return;
     }
-    
+
+    // Validate password length
+    if (formData.password.length < 8) {
+        setError('Password must be at least 8 characters long');
+        return;
+    }
+
     setIsLoading(true);
     setError('');
     
     try {
-      const response = await api.post('/auth/register', formData);
-      
-      if (response.data?.status === 'success') {
-        localStorage.setItem('token', response.data.data.token);
-        localStorage.setItem('user', JSON.stringify(response.data.data.user));
-        setIsSuccess(true);
+        const response = await api.post('/auth/Register', formData);
         
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
-      }
+        if (response.data?.status === 'success') {
+            localStorage.setItem('token', response.data.data.token);
+            localStorage.setItem('user', JSON.stringify(response.data.data.user));
+            setIsSuccess(true);
+            
+            setTimeout(() => {
+                navigate('/dashboard');
+            }, 2000);
+        }
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+        console.error(err);
+        setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
+};
 
   if (isSuccess) {
     return <SuccessScreen 
