@@ -15,7 +15,8 @@ function RegisterPage() {
     name: '',
     email: '',
     password: ''
-  });
+});
+
   const [error, setError] = useState('');
   const [nameError, setNameError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -128,77 +129,87 @@ function RegisterPage() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
     setFormData(prev => ({
-      ...prev,
-      [name]: value
+        ...prev,
+        [name]: value
     }));
     
+    // Clear errors when user starts typing
     if (name === 'name') {
-      setNameError(validateName(value));
+        setNameError('');
     }
     setError('');
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-
-    // Ensure you are consistent with field names
-    const formData = { 
-        name: e.target.name.value, 
-        email: e.target.email.value, 
-        password: e.target.password.value 
-    };
-
-    console.log("Form Data:", formData);
-
-    // Check if all fields are filled
-    if (!formData.name || !formData.email || !formData.password) {
-        setError('All fields are required');
-        return;
-    }
-
-    // Validate name length and characters
-    const nameValidationError = validateName(formData.name);
-    if (nameValidationError) {
-        setNameError(nameValidationError);
-        return;
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-        setError('Please enter a valid email address');
-        return;
-    }
-
-    // Validate password length
-    if (formData.password.length < 8) {
-        setError('Password must be at least 8 characters long');
-        return;
-    }
-
-    setIsLoading(true);
-    setError('');
-    
-    try {
-        const response = await api.post('/auth/Register', formData);
-        
-        if (response.data?.status === 'success') {
-            localStorage.setItem('token', response.data.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.data.user));
-            setIsSuccess(true);
-            
-            setTimeout(() => {
-                navigate('/dashboard');
-            }, 2000);
-        }
-    } catch (err) {
-        console.error(err);
-        setError(err.response?.data?.message || 'Registration failed. Please try again.');
-    } finally {
-        setIsLoading(false);
-    }
 };
+
+// Update your handleRegister function in Register.jsx
+const handleRegister = async (e) => {
+  e.preventDefault();
+
+  const { name, email, password } = formData;
+
+  // Check if all fields are filled
+  if (!name?.trim() || !email?.trim() || !password?.trim()) {
+      setError('All fields are required');
+      return;
+  }
+
+  // Validate name length and characters
+  const nameValidationError = validateName(name);
+  if (nameValidationError) {
+      setNameError(nameValidationError);
+      return;
+  }
+
+  // Validate email format
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+  }
+
+  // Validate password length
+  if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+  }
+
+  setIsLoading(true);
+  setError('');
+  
+  try {
+      // Create registration data object with correct field names
+      const registrationData = {
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          password: password
+      };
+
+      console.log('Sending registration data:', registrationData);
+
+      const response = await api.auth.register(registrationData);
+      
+      if (response?.status === 'success' && response?.data?.token) {
+          localStorage.setItem('token', response.data.token);
+          if (response.data.user) {
+              localStorage.setItem('user', JSON.stringify(response.data.user));
+          }
+          
+          setIsSuccess(true);
+          setTimeout(() => {
+              navigate('/dashboard');
+          }, 2000);
+      } else {
+          throw new Error('Invalid response from server');
+      }
+  } catch (err) {
+      console.error('Registration error:', err);
+      setError(err.message || 'Registration failed. Please try again.');
+  } finally {
+      setIsLoading(false);
+  }
+};
+
 
   if (isSuccess) {
     return <SuccessScreen 
@@ -234,15 +245,15 @@ function RegisterPage() {
             <div className="input-wrapper">
               <User className="input-icon" />
               <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className={`form-input ${nameError ? 'error' : ''}`}
-                placeholder="Enter your full name"
-                required
-              />
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`form-input ${nameError ? 'error' : ''}`}
+              placeholder="Enter your full name"
+              required
+            />
             </div>
             {nameError && (
               <div className="input-error">

@@ -142,13 +142,31 @@ const auth = {
     return response;
   },
 
-  async register(userData) {
-    const response = await apiWrapper.post('/auth/register', userData);
-    if (response.data?.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
-    return response;
+// Update the register method in auth object
+async register(userData) {
+  // Validate required fields before making the request
+  const { name, email, password } = userData;
+  
+  if (!name?.trim() || !email?.trim() || !password) {
+      throw new Error('All fields are required');
+  }
+
+  // Log the request data
+  console.log('API register method - sending data:', userData);
+
+  try {
+      const response = await apiWrapper.post('/auth/register', userData);
+      console.log('API register method - response:', response);
+
+      if (response.data?.token) {
+          localStorage.setItem('token', response.data.token);
+          localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      return response;
+  } catch (error) {
+      console.error('API register method - error:', error);
+      throw error;
+  }
   },
 
   async logout() {
